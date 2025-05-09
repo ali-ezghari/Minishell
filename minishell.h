@@ -19,17 +19,6 @@ typedef struct s_env_node
     struct s_env_node *next;
 } t_env_node;
 
-/**
- * Stores the history of previously executed commands.
- * Uses a dynamic array of strings.
- */
-typedef struct s_history
-{
-    char **cmds;
-    int count;
-    int capacity;
-} t_history;
-
 typedef enum s_token_type
 {
     TOKEN_WORD,
