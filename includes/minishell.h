@@ -2,33 +2,86 @@
 # define MINISHELL_H
 
 # include <stdlib.h>
-# include <string.h>
+# include <unistd.h>
 # include <stdio.h>
+# include <string.h>
+# include <fcntl.h>
+# include <errno.h>
+# include <limits.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include <limits.h>
-# include <stdint.h>
-# include <unistd.h>
-# include <fcntl.h>
 
-typedef struct s_env_node
+/*
+** Enum for token types (used by lexer and parser)
+*/
+typedef enum e_token_type
 {
-    char *key;
-    char *value;
+	T_WORD,         // general word (e.g., command or argument)
+	T_PIPE,         // |
+	T_REDIRECT_IN,  // <
+	T_REDIRECT_OUT, // >
+	T_APPEND,       // >>
+	T_HEREDOC       // <<
+}	t_token_type;
 
-    struct s_env_node *next;
-} t_env_node;
 
-typedef enum s_token_type
+/*
+** Linked list of tokens (produced by tokenizer)
+*/
+typedef struct s_token
 {
-    TOKEN_WORD,
-    TOKEN_PIPE,
-    TOKEN_REDIR_IN,
-    TOKEN_REDIR_OUT,
-    TOKEN_REDIR_APPEND,
-    TOKEN_HEREDOC
-} t_token_type;
+	char			*value;     //str content
+	t_token_type	type;       //type of the token
+	struct s_token	*next;      //next token
+}	t_token;
 
+/*
+** Linked list of redirections attached to a command
+*/
+typedef struct s_redir
+{
+	t_token_type	type;       // >, >>, <, <<
+	char			*filename;  // target file or limiter str
+	struct s_redir	*next;      // next redir in the list
+}	t_redir;
+
+/*
+** Represents a single command in the pipeline, e.g.:
+** echo hi | grep h > out.txt
+** Each command is one node in the pipeline.
+*/
+typedef struct s_command
+{
+	char			**av;     // av (NULL-terminated)
+	t_redir			*redirs;    // list of redir (if any)
+	int				count;       // count
+	struct s_command *next;     // next command in a pipeline
+}	t_command;
+
+
+/*
+** shell context: shared between parser and executor
+*/
+typedef struct s_shell
+{
+	char		**envp;      // env vars
+	t_token		*tokens;    // token list from lexer
+	t_command	*cmds;      // command list from parser
+	int			exit_status;// last exit code
+}	t_shell;
+
+//
+// TOKENIZER / LEXER FUNCTIONS
+//
+
+char	**tokenize(const char *input);
+char	*strndup_custom(const char *s, size_t n);
+void	skip_spaces(const char **str);
+char	*get_quoted_token(const char **str);
+char	*get_operator_token(const char **str);
+char	*get_env_var_token(const char **str);
+char	*get_word_token(const char **str);
+t_token	*build_lexed_tokens(char **token_array);
 
 
 #endif
