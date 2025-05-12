@@ -7,10 +7,6 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-/**
- * Linked list node representing an environment variable.
- * Stores the variable's key and value.
- */
 typedef struct s_env_node
 {
     char *key;
@@ -29,19 +25,6 @@ typedef enum s_token_type
     TOKEN_HEREDOC
 } t_token_type;
 
-/**
- * Represents a single token from the input.
- * - type: The token's type (e.g., TOKEN_REDIR_OUT for ">")
- * - value: The string value of the token
- */
-typedef struct s_token
-{
-    t_token_type type;
-    char *value;
-    struct s_token *next;
-} t_token;
 
-
-char	**input_split(char *input);
 
 #endif
