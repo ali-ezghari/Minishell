@@ -3,7 +3,7 @@ NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 
-SRCS = main/shell.c 
+SRCS = main/shell.c parsing/parser.c execution/executor.c builtins/pwd.c helper_funcs/helpers.c
 OBJS = $(SRCS:.c=.o)
 
 INCLUDES = minishell.h
