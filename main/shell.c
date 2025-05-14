@@ -21,7 +21,7 @@ void shell_loop(t_shell *shell)
     clear_history();
 }
 
-int main()
+int main(int argc, char *argv[], char *envp[])
 {
     t_shell shell;
 
