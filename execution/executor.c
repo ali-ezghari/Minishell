@@ -5,7 +5,7 @@ void execute_one_cmd(t_shell *shell)
     if (!strncmp(shell->cmds->av[0], "echo", 5))
         bin_echo(shell);
     else if (!strncmp(shell->cmds->av[0], "cd", 3))
-        bin_cd(shell);
+        bin_cd(shell->cmds, shell);
     else if (!strncmp(shell->cmds->av[0], "export", 7))
         bin_export(shell);
     else if (!strncmp(shell->cmds->av[0], "unset", 7))

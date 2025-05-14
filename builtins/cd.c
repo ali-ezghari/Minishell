@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-void print_cd_err(char *msg, char *name, int status, t_shell *shell)
+static void print_cd_err(char *msg, char *name, int status, t_shell *shell)
 {
 	write(2, "Minishell: cd: ", 15);
 	if (name)
@@ -13,7 +13,7 @@ void print_cd_err(char *msg, char *name, int status, t_shell *shell)
 	shell->exit_status = status;
 }
 
-void cd_home(t_shell *shell)
+static void cd_home(t_shell *shell)
 {
 	char *path;
 
