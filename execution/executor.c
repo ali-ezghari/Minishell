@@ -67,9 +67,9 @@ void execution(t_shell *shell)
         execute_multiple_cmds(shell);
 }
 
-int main()
-{
-    t_shell shell;
-    // memset(&shell, 0, sizeof(t_shell));
-    execution(&shell);
-}
+// int main()
+// {
+//     t_shell shell;
+//     // memset(&shell, 0, sizeof(t_shell));
+//     execution(&shell);
+// }
