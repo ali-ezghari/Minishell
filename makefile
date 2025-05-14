@@ -13,7 +13,7 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 
-SRCS = main/shell.c parsing/parser.c execution/executor.c builtins/pwd.c helper_funcs/helpers.c
+SRCS = main/shell.c parsing/parser.c parsing/tokenize.c execution/executor.c builtins/pwd.c helper_funcs/allocator.c
 OBJS = $(SRCS:.c=.o)
 
 INCLUDES = minishell.h
