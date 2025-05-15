@@ -95,4 +95,5 @@ void bin_pwd(t_shell *shell);
 void bin_cd(t_command *cmd, t_shell *shell);
 void bin_echo(t_command *cmd, t_shell *shell);
 void bin_env(t_command *cmd, t_shell *shell);
+void bin_unset(t_command *cmd, t_shell *shell);
 #endif

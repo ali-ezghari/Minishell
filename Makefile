@@ -10,6 +10,7 @@ SRCS = \
     builtins/cd.c \
     builtins/env.c \
     builtins/pwd.c \
+    builtins/unset.c \
     helper_funcs/allocator.c
 OBJS = $(SRCS:.c=.o)
 
