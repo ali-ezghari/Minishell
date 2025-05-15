@@ -69,6 +69,7 @@ typedef struct s_shell
     t_env *envp;
     t_token *tokens; // token list from lexer
     t_command *cmds; // command list from parser
+    int is_forked;
     int exit_status; // last exit code
     t_allocator *allocator; // the memory list
 } t_shell;
@@ -96,4 +97,5 @@ void bin_cd(t_command *cmd, t_shell *shell);
 void bin_echo(t_command *cmd, t_shell *shell);
 void bin_env(t_command *cmd, t_shell *shell);
 void bin_unset(t_command *cmd, t_shell *shell);
+void bin_exit(t_command *cmd, t_shell *shell);
 #endif
