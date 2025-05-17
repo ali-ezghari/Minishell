@@ -7,7 +7,7 @@ void bin_echo(t_command *cmd, t_shell *shell)
 
 	flag = 1;
 	i = 1;
-	while (cmd->av[i] && !ft_strncmp(cmd->av[i], "-n",3))
+	while (cmd->av[i] && !ft_strcmp(cmd->av[i], "-n"))
 	{
 		i++;
 		flag = 0;

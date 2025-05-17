@@ -25,7 +25,7 @@ static void unset_one_var(char *var, t_shell *shell)
     curr = shell->envp;
     while (curr)
     {
-        if (!ft_strncmp(var, curr->key, ft_strlen(curr->key) + 1))
+        if (!ft_strcmp(var, curr->key))
             curr = free_var(shell, curr, prev);
         else
         {
