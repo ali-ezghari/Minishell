@@ -1,5 +1,19 @@
 #include "../includes/utils.h"
 
+void add_to_allocator(void *ptr, t_allocator **allocator)
+{
+    t_allocator *new;
+
+    if (!ptr)
+        return;
+    new = malloc(sizeof(t_allocator));
+    if (!new)
+        return;
+    new->ptr = ptr;
+    new->next = *allocator;
+    *allocator = new;
+}
+
 void *ft_malloc(size_t size, t_allocator **allocator)
 {
     void        *ptr;
