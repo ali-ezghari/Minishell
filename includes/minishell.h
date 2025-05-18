@@ -1,7 +1,6 @@
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
-#include <sys/wait.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -46,7 +45,6 @@ typedef struct s_redir
 {
     t_token_type type;    // >, >>, <, <<
     char *filename;       // target file or limiter str
-    int fd;
     struct s_redir *next; // next redir in the list
 } t_redir;
 
@@ -63,33 +61,51 @@ typedef struct s_command
     int is_builtin; // set to 1 if its builtin, 0 otherwise
 } t_command;
 
+
 /*
 ** shell context: shared between parser and executor
 */
 typedef struct s_shell
 {
     t_env *envp;
-    t_token *tokens; // token list from lexer
-    t_command *cmds; // command list from parser
-    int in_fd_b;
-    int out_fd_b;
+    t_allocator  *gc;
+    t_token *tokens;
+    t_command *cmds;
     int is_forked;
-    int exit_status; // last exit code
-    t_allocator *allocator; // the memory list
+    int exit_status;
+    t_allocator *allocator;
+
+    int in_fd_b;    // backup of stdin fd
+    int out_fd_b;   // backup of stdout fd
 } t_shell;
 
 //
 // TOKENIZER / LEXER FUNCTIONS
 //
 
-char **tokenize(const char *input);
+char **tokenize(const char *input, t_allocator **gc);
 char *strndup_custom(const char *s, size_t n);
 void skip_spaces(const char **str);
 char *get_quoted_token(const char **str);
-char *get_operator_token(const char **str);
+char *get_operator_token(const char **str, t_allocator **gc);
 char *get_env_var_token(const char **str);
 char *get_word_token(const char **str);
-t_token *build_lexed_tokens(char **token_array);
+t_token *build_lexed_tokens(char **token_array, t_allocator **gc);
+
+
+//
+// HELPER FUNCTIONS
+//
+
+void free_token_list(t_token *head);
+void free_token_array(char **arr);
+int	ft_strcmp(const char *s1, const char *s2);
+
+//
+// PARSING
+//
+
+t_command *parse_tokens(t_token *tokens, t_allocator **gc);
 
 
 //
@@ -102,19 +118,4 @@ void bin_echo(t_command *cmd, t_shell *shell);
 void bin_env(t_command *cmd, t_shell *shell);
 void bin_unset(t_command *cmd, t_shell *shell);
 void bin_exit(t_command *cmd, t_shell *shell);
-
-
-// 
-// helpers
-//
-
-void in_out_backup(t_shell *shell);
-char *ft_getenv(char *key, t_shell *shell);
-void pipe_err(t_shell *shell);
-
-//
-// heredoc
-//
-char *quote_remover(char *del, int *expand, t_shell *shell);
-
 #endif

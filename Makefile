@@ -1,16 +1,19 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 
+NAME = minishell
+
 SRCS = \
     main/shell.c \
     parsing/tokenize.c \
     parsing/parser.c \
-    execution/executor.c \
+    parsing/lexer.c \
     builtins/echo.c \
     builtins/cd.c \
     builtins/env.c \
     builtins/pwd.c \
     builtins/unset.c \
+    helper_funcs/helpers1.c \
     helper_funcs/allocator.c
 OBJS = $(SRCS:.c=.o)
 

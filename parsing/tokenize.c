@@ -1,5 +1,11 @@
-#include "includes/minishell.h"
-
+#include "../includes/minishell.h"
+#include "../includes/utils.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 #define IS_OPERATOR(c) ((c) == '|' || (c) == '<' || (c) == '>')
 #define MAX_TOKENS 512
@@ -22,13 +28,13 @@ char *ft_strndup(const char *s, size_t n)
     return dup;
 }
 
-void skip_spaces(const char **str) //white spaces friendly
+void skip_spaces(const char **str)
 {
-    while (**str && isspace(**str))  //i will include ft_isspace later
+    while (**str && (**str == ' ' || (**str >= 9 && **str <= 13)))
         (*str)++;
 }
 
-char *get_quoted_token(const char **str) //spaces friendly
+char *get_quoted_token(const char **str)
 {
     char quote;
     const char *start;
@@ -42,72 +48,74 @@ char *get_quoted_token(const char **str) //spaces friendly
     len = *str - start;
     if (**str == quote)
         (*str)++;
-    return strndup_custom(start, len); //ret str without quotes
+    return ft_strndup(start, len);
 }
 
-//tokens : |, >, <, >>, <<
-char *get_operator_token(const char **str)
+char *get_operator_token(const char **str, t_allocator **gc)
 {
-    char *token;
-
-    token = malloc(3);
+    char *token = ft_malloc(3, gc);
     if (!token)
         return NULL;
-    token[0] = **str; //op char
-    token[1] = '\0'; //for now
-    token[2] = '\0'; //just in case
+
+    token[0] = **str;
+    token[1] = '\0';
+    token[2] = '\0';
 
     if ((**str == '<' || **str == '>') && *(*str + 1) == **str)
     {
-        token[1] = **str; //dup op
-        (*str) += 2; //skip both
+        token[1] = **str;
+        (*str) += 2;
     }
     else
-        (*str)++; //else skip 1
+        (*str)++;
     return token;
 }
-//handls ex:$var and rep with getenv()
-char *get_env_var_token(const char **str) 
+
+char *get_env_var_token(const char **str)
 {
     const char *start;
     size_t len;
     char *var_name;
     char *value;
 
-    (*str)++; // skip '$'
+    (*str)++;
     start = *str;
-    while (**str && (isalnum(**str) || **str == '_'))
+    while (**str && (ft_isalnum(**str) || **str == '_'))
         (*str)++;
     len = *str - start;
-    var_name = strndup_custom(start, len);
+    var_name = ft_strndup(start, len);
     value = getenv(var_name);
     free(var_name);
     if (!value)
-        return strdup(""); //ret empty str if not found
-    return strdup(value);
+        return ft_strdup("");
+    return ft_strdup(value);
 }
-//plain word
+
 char *get_word_token(const char **str)
 {
     const char *start;
 
     start = *str;
-    while (**str && !isspace(**str) && !IS_OPERATOR(**str) && **str != '"' && **str != '\'' && **str != '$')
+    while (**str
+        && !(**str == ' ' || (**str >= 9 && **str <= 13))
+        && !IS_OPERATOR(**str)
+        && **str != '"'
+        && **str != '\''
+        && **str != '$')
+    {
         (*str)++;
-    return strndup_custom(start, *str - start); //ret extracted word
+    }
+    return ft_strndup(start, *str - start);
 }
 
-char **tokenize(const char *input) //main loop
+char **tokenize(const char *input, t_allocator **gc)
 {
-    const char *p;
-    char **tokens;
-    int i;
+    const char *p = input;
+    char **tokens = ft_malloc(sizeof(char *) * MAX_TOKENS, gc);
+    int i = 0;
 
-    p = input;
-    tokens = malloc(sizeof(char *) * MAX_TOKENS);
     if (!tokens)
         return NULL;
-    i = 0;
 
     while (*p)
     {
@@ -115,13 +123,13 @@ char **tokenize(const char *input) //main loop
         if (!*p)
             break;
 
-        if (*p == '"' || *p == '\'')//quotes
+        if (*p == '"' || *p == '\'')
             tokens[i++] = get_quoted_token(&p);
-        else if (*p == '$')//env var
+        else if (*p == '$')
             tokens[i++] = get_env_var_token(&p);
-        else if (IS_OPERATOR(*p))//operators
-            tokens[i++] = get_operator_token(&p);
-        else //regular word
+        else if (IS_OPERATOR(*p))
+            tokens[i++] = get_operator_token(&p, gc);
+        else
             tokens[i++] = get_word_token(&p);
     }
 
@@ -129,9 +137,9 @@ char **tokenize(const char *input) //main loop
     return tokens;
 }
 
-int main(void)
+/*int main(int ac, char **av)
 {
-    char *cmd = "echo $USER | grep \"test me\" >> outfile";
+    char *cmd = av[1];
     char **tokens;
     int i;
 
@@ -145,4 +153,4 @@ int main(void)
     }
     free(tokens);
     return 0;
-}
+}*/
