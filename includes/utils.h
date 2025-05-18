@@ -15,4 +15,6 @@ void *ft_malloc(size_t size, t_allocator **allocator);
 void free_all(t_allocator **allocator);
 void add_to_allocator(void *ptr, t_allocator **allocator);
 
+
+int	ft_strcmp(const char *s1, const char *s2);
 #endif

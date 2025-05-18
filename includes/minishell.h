@@ -1,6 +1,7 @@
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
+#include <sys/wait.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -45,6 +46,7 @@ typedef struct s_redir
 {
     t_token_type type;    // >, >>, <, <<
     char *filename;       // target file or limiter str
+    int fd;
     struct s_redir *next; // next redir in the list
 } t_redir;
 
@@ -69,6 +71,8 @@ typedef struct s_shell
     t_env *envp;
     t_token *tokens; // token list from lexer
     t_command *cmds; // command list from parser
+    int in_fd_b;
+    int out_fd_b;
     int is_forked;
     int exit_status; // last exit code
     t_allocator *allocator; // the memory list
@@ -98,4 +102,12 @@ void bin_echo(t_command *cmd, t_shell *shell);
 void bin_env(t_command *cmd, t_shell *shell);
 void bin_unset(t_command *cmd, t_shell *shell);
 void bin_exit(t_command *cmd, t_shell *shell);
+
+
+// 
+// helpers
+//
+
+void in_out_backup(t_shell *shell);
+char *ft_getenv(char *key, t_shell *shell);
 #endif
