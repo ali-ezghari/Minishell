@@ -39,3 +39,9 @@ char *ft_getenv(char *key, t_shell *shell)
     }
     return (NULL);
 }
+
+void pipe_err(t_shell *shell)
+{
+	perror("Pipe error");
+	shell->exit_status = 1;
+}

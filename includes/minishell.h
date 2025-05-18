@@ -110,4 +110,11 @@ void bin_exit(t_command *cmd, t_shell *shell);
 
 void in_out_backup(t_shell *shell);
 char *ft_getenv(char *key, t_shell *shell);
+void pipe_err(t_shell *shell);
+
+//
+// heredoc
+//
+char *quote_remover(char *del, int *expand, t_shell *shell);
+
 #endif

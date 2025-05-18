@@ -26,7 +26,7 @@ int main(int argc, char *argv[], char *envp[])
     t_shell shell;
 
     shell.allocator = NULL;
-    in_out_backup(shell);
+    in_out_backup(&shell);
     shell_loop(&shell);
     return (0);
 }
