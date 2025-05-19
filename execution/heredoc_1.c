@@ -4,7 +4,7 @@ char *expand_heredoc(char *ln, t_shell *shell)
     // todo, once expand function is completed
     return (ln);
 }
-int fill_heredoc(t_shell *shell, t_redir *redir)
+static int fill_heredoc(t_shell *shell, t_redir *redir)
 {
     int fd[2];
     char *rl;
@@ -18,7 +18,7 @@ int fill_heredoc(t_shell *shell, t_redir *redir)
     {
         rl = readline("> ");
         if (rl)
-            add_to_allocator(rl, &shell->allocator);
+            add_to_allocator(rl, &shell->gc);
         if (!rl || !ft_strcmp(rl, del))
             break;
         if (expand == 1 && ft_strchr(rl, '$'))

@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-void add_to_allocator(void *ptr, t_allocator **allocator)
+void add_to_allocator(void *ptr, t_allocator **gc)
 {
     t_allocator *new;
 
@@ -10,11 +10,11 @@ void add_to_allocator(void *ptr, t_allocator **allocator)
     if (!new)
         return;
     new->ptr = ptr;
-    new->next = *allocator;
-    *allocator = new;
+    new->next = *gc;
+    *gc = new;
 }
 
-void *ft_malloc(size_t size, t_allocator **allocator)
+void *ft_malloc(size_t size, t_allocator **gc)
 {
     void        *ptr;
     t_allocator   *new;
@@ -29,20 +29,20 @@ void *ft_malloc(size_t size, t_allocator **allocator)
         return (NULL);
     }
     new->ptr = ptr;
-    new->next = *allocator;
-    *allocator = new;
+    new->next = *gc;
+    *gc = new;
     return (ptr);
 }
 
-void free_all(t_allocator **allocator)
+void free_all(t_allocator **gc)
 {
     t_allocator *tmp;
 
-    while (*allocator)
+    while (*gc)
     {
-        free((*allocator)->ptr);
-        tmp = *allocator;
-        *allocator = (*allocator)->next;
+        free((*gc)->ptr);
+        tmp = *gc;
+        *gc = (*gc)->next;
         free(tmp);
     }
 }

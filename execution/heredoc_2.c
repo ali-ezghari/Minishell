@@ -11,7 +11,7 @@ static char *allocate_del(char *del, int len, t_shell *shell)
     str = malloc(sizeof(char) * (len + 1));
     if (!str)
         return (NULL);
-    add_to_allocator(str, &shell->allocator);
+    add_to_allocator(str, &shell->gc);
     while (del[i])
     {
         if (del[i] == '"' || del[i] == '\'')

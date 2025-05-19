@@ -46,6 +46,7 @@ typedef struct s_redir
     t_token_type type;    // >, >>, <, <<
     char *filename;       // target file or limiter str
     struct s_redir *next; // next redir in the list
+    int fd;
 } t_redir;
 
 /*
@@ -58,25 +59,19 @@ typedef struct s_command
     char **av;              // av (NULL-terminated)
     t_redir *redirs;        // list of redir (if any)
     struct s_command *next; // next command in a pipeline
-    int is_builtin; // set to 1 if its builtin, 0 otherwise
 } t_command;
 
-
-/*
-** shell context: shared between parser and executor
-*/
 typedef struct s_shell
 {
     t_env *envp;
-    t_allocator  *gc;
+    t_allocator *gc;
     t_token *tokens;
     t_command *cmds;
     int is_forked;
     int exit_status;
-    t_allocator *allocator;
 
-    int in_fd_b;    // backup of stdin fd
-    int out_fd_b;   // backup of stdout fd
+    int in_fd_b;
+    int out_fd_b;
 } t_shell;
 
 //
@@ -91,15 +86,6 @@ char *get_operator_token(const char **str, t_allocator **gc);
 char *get_env_var_token(const char **str);
 char *get_word_token(const char **str);
 t_token *build_lexed_tokens(char **token_array, t_allocator **gc);
-
-
-//
-// HELPER FUNCTIONS
-//
-
-void free_token_list(t_token *head);
-void free_token_array(char **arr);
-int	ft_strcmp(const char *s1, const char *s2);
 
 //
 // PARSING
@@ -118,4 +104,26 @@ void bin_echo(t_command *cmd, t_shell *shell);
 void bin_env(t_command *cmd, t_shell *shell);
 void bin_unset(t_command *cmd, t_shell *shell);
 void bin_exit(t_command *cmd, t_shell *shell);
+void bin_export(t_command *cmd, t_shell *shell);
+
+// EXECTION
+int open_files(t_redir *redir, t_shell *shell);
+int execute_builtin(t_command *cmd, t_shell *shell);
+void execute_one_cmd(t_command *cmd, t_shell *shell);
+void execution(t_shell *shell);
+//
+// HEREDOC
+//
+int handle_heredoc(t_command *cmd, t_shell *shell);
+char *quote_remover(char *del, int *expand, t_shell *shell);
+
+//
+// Helpers
+//
+void in_out_backup(t_shell *shell);
+int ft_strcmp(const char *s1, const char *s2);
+void free_token_list(t_token *head);
+void free_token_array(char **arr);
+char *ft_getenv(char *key, t_shell *shell);
+void pipe_err(t_shell *shell);
 #endif
