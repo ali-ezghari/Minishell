@@ -36,7 +36,7 @@ char *get_path1(char *cmd, t_shell *shell)
     char *paths_str;
     char *full_cmd;
 
-    if (ft_strlen(cmd[0]) == 0)
+    if (ft_strlen(cmd) == 0)
         return (custom_cmd_err("Command not found", "''", 127, shell), NULL);
     paths_str = ft_getenv("PATH", shell);
     if (!paths_str)
