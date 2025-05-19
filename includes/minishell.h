@@ -120,10 +120,17 @@ char *quote_remover(char *del, int *expand, t_shell *shell);
 //
 // Helpers
 //
+void close_files(t_redir *redir);
 void in_out_backup(t_shell *shell);
 int ft_strcmp(const char *s1, const char *s2);
 void free_token_list(t_token *head);
 void free_token_array(char **arr);
 char *ft_getenv(char *key, t_shell *shell);
 void pipe_err(t_shell *shell);
+void dup_in(int fd, t_shell *shell);
+void dup_out(int fd, t_shell *shell);
+void restore_fds(int out, int in);
+void custom_cmd_err(char *msg, char *name, int status, t_shell *shell);
+char *ft_strjoin_three(char *s1, char *s2, char *s3);
+void add_string_array_to_allocator(char **arr, t_allocator **gc);
 #endif

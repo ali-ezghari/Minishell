@@ -1,0 +1,30 @@
+#include "../includes/minishell.h"
+
+void dup_in(int fd, t_shell *shell)
+{
+    if (dup2(fd, STDIN_FILENO) == -1)
+    {
+        perror("dup2 error");
+        exit(1);
+    }
+    close(fd);
+}
+void dup_out(int fd, t_shell *shell)
+{
+    if (dup2(fd, STDOUT_FILENO) == -1)
+    {
+        perror("dup2 error");
+        exit(1);
+    }
+    close(fd);
+}
+void restore_fds(int out, int in)
+{
+    dup2(in, STDIN_FILENO);
+    dup2(out, STDOUT_FILENO);
+}
+void in_out_backup(t_shell *shell)
+{
+    shell->in_fd_b = dup(STDIN_FILENO);
+    shell->out_fd_b = dup(STDOUT_FILENO);
+}
