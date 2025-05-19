@@ -17,7 +17,7 @@ static char *get_path2(char *cmd, char **paths_arr, t_shell *shell)
     while (paths_arr[i])
     {
         full_cmd = ft_strjoin_three(paths_arr[i], "/", cmd);
-        add_to_allocator(full_cmd, &shell->gc); 
+        add_to_allocator(full_cmd, &shell->gc);
         if (!full_cmd)
         {
             shell->exit_status = 1;
@@ -36,9 +36,11 @@ char *get_path1(char *cmd, t_shell *shell)
     char *paths_str;
     char *full_cmd;
 
+    if (ft_strlen(cmd[0]) == 0)
+        return (custom_cmd_err("Command not found", "''", 127, shell), NULL);
     paths_str = ft_getenv("PATH", shell);
     if (!paths_str)
-        return (custom_cmd_err(strerror(errno), cmd, 127, shell), NULL);
+        return (custom_cmd_err("Command not found", cmd, 127, shell), NULL);
     if (ft_strchr(cmd, '/'))
         return (handle_direct_path(cmd, shell));
     paths_arr = ft_split(paths_str, ':');

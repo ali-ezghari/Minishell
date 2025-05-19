@@ -18,7 +18,7 @@ void dup_out(int fd, t_shell *shell)
     }
     close(fd);
 }
-void restore_fds(int out, int in)
+void restore_fds(int in, int out)
 {
     dup2(in, STDIN_FILENO);
     dup2(out, STDOUT_FILENO);
