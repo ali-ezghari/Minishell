@@ -93,7 +93,6 @@ t_token *build_lexed_tokens(char **token_array, t_allocator **gc);
 
 t_command *parse_tokens(t_token *tokens, t_allocator **gc);
 
-
 //
 // builtins
 //
@@ -111,6 +110,9 @@ int open_files(t_redir *redir, t_shell *shell);
 int execute_builtin(t_command *cmd, t_shell *shell);
 void execute_one_cmd(t_command *cmd, t_shell *shell);
 void execution(t_shell *shell);
+char *get_path1(char *cmd, t_shell *shell);
+void close_files(t_redir *redir);
+char *ft_getenv(char *key, t_env *env);
 //
 // HEREDOC
 //
@@ -120,12 +122,11 @@ char *quote_remover(char *del, int *expand, t_shell *shell);
 //
 // Helpers
 //
-void close_files(t_redir *redir);
+
 void in_out_backup(t_shell *shell);
 int ft_strcmp(const char *s1, const char *s2);
 void free_token_list(t_token *head);
 void free_token_array(char **arr);
-char *ft_getenv(char *key, t_shell *shell);
 void pipe_err(t_shell *shell);
 void dup_in(int fd, t_shell *shell);
 void dup_out(int fd, t_shell *shell);

@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-char *handle_direct_path(char *cmd, t_shell *shell)
+static char *handle_direct_path(char *cmd, t_shell *shell)
 {
     if (access(cmd, F_OK) != 0)
         return (custom_cmd_err(strerror(errno), cmd, 127, shell), NULL);
@@ -8,7 +8,7 @@ char *handle_direct_path(char *cmd, t_shell *shell)
         return (custom_cmd_err(strerror(errno), cmd, 126, shell), NULL);
     return (ft_strdup(cmd));
 }
-char *get_path2(char *cmd, char **paths_arr, t_shell *shell)
+static char *get_path2(char *cmd, char **paths_arr, t_shell *shell)
 {
     char *full_cmd;
     int i;
