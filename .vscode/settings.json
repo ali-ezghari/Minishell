@@ -2,6 +2,8 @@
     "files.associations": {
         "stdio.h": "c",
         "minishell.h": "c",
-        "cstdlib": "c"
+        "cstdlib": "c",
+        "libft.h": "c",
+        "cerrno": "c"
     }
 }

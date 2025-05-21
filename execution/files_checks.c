@@ -30,7 +30,7 @@ static int open_nd_redir(t_redir *redir, t_shell *shell)
     else
         dup_out(fd, shell);
     return (0);
-}
+} 
 
 int open_files(t_redir *redir, t_shell *shell)
 {

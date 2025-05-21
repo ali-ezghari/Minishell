@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-void custom_cmd_err(char *msg, char *name, int status, t_shell *shell)
+void custom_err(char *msg, char *name, int status, t_shell *shell)
 {
     write(2, "minishell: ", 11);
     if (name)
@@ -8,7 +8,8 @@ void custom_cmd_err(char *msg, char *name, int status, t_shell *shell)
         write(2, name, strlen(name));
         write(2, ": ", 2);
     }
-    write(2, msg, strlen(msg));
+    if (msg)
+        write(2, msg, strlen(msg));
     write(2, "\n", 1);
     shell->exit_status = status;
 }

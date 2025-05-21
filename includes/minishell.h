@@ -65,6 +65,7 @@ typedef struct s_command
 typedef struct s_shell
 {
     t_env *envp;
+    char **envs;
     t_allocator *gc;
     t_token *tokens;
     t_command *cmds;
@@ -114,7 +115,8 @@ void execution(t_shell *shell);
 char *get_path1(char *cmd, t_shell *shell);
 void close_files(t_redir *redir);
 char *ft_getenv(char *key, t_env *env);
-void exec_child(t_command *cmd, t_shell *shell);
+void get_exit_code(int status, t_shell *shell);
+void execute_multiple_cmds(int count, t_command *cmd, t_shell *shell);
 //
 // HEREDOC
 //
@@ -133,7 +135,7 @@ void pipe_err(t_shell *shell);
 void dup_in(int fd, t_shell *shell);
 void dup_out(int fd, t_shell *shell);
 void restore_fds(int in, int out);
-void custom_cmd_err(char *msg, char *name, int status, t_shell *shell);
+void custom_err(char *msg, char *name, int status, t_shell *shell);
 char *ft_strjoin_three(char *s1, char *s2, char *s3);
 void add_string_array_to_allocator(char **arr, t_allocator **gc);
 #endif

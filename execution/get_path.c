@@ -27,7 +27,7 @@ static char *get_path2(char *cmd, char **paths_arr, t_shell *shell)
             return (full_cmd);
         i++;
     }
-    custom_cmd_err("command not found", cmd, 127, shell);
+    custom_err("command not found", cmd, 127, shell);
     return (NULL);
 }
 char *get_path1(char *cmd, t_shell *shell)
@@ -37,10 +37,10 @@ char *get_path1(char *cmd, t_shell *shell)
     char *full_cmd;
 
     if (ft_strlen(cmd) == 0)
-        return (custom_cmd_err("Command not found", "''", 127, shell), NULL);
-    paths_str = ft_getenv("PATH", shell);
+        return (custom_err("Command not found", "''", 127, shell), NULL);
+    paths_str = ft_getenv("PATH", shell->envp);
     if (!paths_str)
-        return (custom_cmd_err("Command not found", cmd, 127, shell), NULL);
+        return (custom_err("Command not found", cmd, 127, shell), NULL);
     if (ft_strchr(cmd, '/'))
         return (handle_direct_path(cmd, shell));
     paths_arr = ft_split(paths_str, ':');
