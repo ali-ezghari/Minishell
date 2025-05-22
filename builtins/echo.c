@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   echo.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aezghari <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/22 11:16:56 by aezghari          #+#    #+#             */
+/*   Updated: 2025/05/22 11:17:11 by aezghari         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-void bin_echo(t_command *cmd, t_shell *shell)
+void	bin_echo(t_command *cmd, t_shell *shell)
 {
-	int i;
-	int flag;
+	int	i;
+	int	flag;
 
 	flag = 1;
 	i = 1;

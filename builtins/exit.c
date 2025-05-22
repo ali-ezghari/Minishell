@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aezghari <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/22 11:17:45 by aezghari          #+#    #+#             */
+/*   Updated: 2025/05/22 11:19:29 by aezghari         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-static void print_exit_err(char *msg, char *name, int status, t_shell *shell)
+static void	print_exit_err(char *msg, char *name, int status, t_shell *shell)
 {
 	write(2, "Minishell: exit: ", 17);
 	if (name)
@@ -13,10 +25,11 @@ static void print_exit_err(char *msg, char *name, int status, t_shell *shell)
 	shell->exit_status = status;
 }
 
-static int is_numeric(const char *s)
+static int	is_numeric(const char *s)
 {
-	int i = 0;
+	int	i;
 
+	i = 0;
 	if (!s)
 		return (0);
 	if (s[0] == '-' || s[0] == '+')
@@ -30,13 +43,11 @@ static int is_numeric(const char *s)
 		i++;
 	}
 	if (i >= 20 && s[0] != '0')
-	{
 		return (2);
-	}
 	return (1);
 }
 
-static int check_errors(t_command *cmd, t_shell *shell)
+static int	check_errors(t_command *cmd, t_shell *shell)
 {
 	if (is_numeric(cmd->av[1]) && cmd->av[2])
 	{
@@ -52,9 +63,9 @@ static int check_errors(t_command *cmd, t_shell *shell)
 		return (ft_atoi(cmd->av[1]) % 256);
 }
 
-void bin_exit(t_command *cmd, t_shell *shell)
+void	bin_exit(t_command *cmd, t_shell *shell)
 {
-	int st;
+	int	st;
 
 	st = 0;
 	if (shell->is_forked == 0)
@@ -63,8 +74,6 @@ void bin_exit(t_command *cmd, t_shell *shell)
 		st = shell->exit_status;
 	else
 		st = check_errors(cmd, shell);
-
-	// close fds & free data // todo
-
+	/* close fds & free data todo */
 	exit(st);
 }

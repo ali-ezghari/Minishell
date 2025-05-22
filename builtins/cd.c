@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aezghari <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/22 11:15:53 by aezghari          #+#    #+#             */
+/*   Updated: 2025/05/22 11:16:45 by aezghari         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-static void print_cd_err(char *msg, char *name, int status, t_shell *shell)
+static void	print_cd_err(char *msg, char *name, int status, t_shell *shell)
 {
 	write(2, "Minishell: cd: ", 15);
 	if (name)
@@ -13,11 +25,11 @@ static void print_cd_err(char *msg, char *name, int status, t_shell *shell)
 	shell->exit_status = status;
 }
 
-static void cd_home(t_shell *shell)
+static void	cd_home(t_shell *shell)
 {
-	char *path;
+	char	*path;
 
-    path = getenv("HOME");
+	path = getenv("HOME");
 	if (!path)
 		print_cd_err("HOME not set", NULL, 1, shell);
 	else if (chdir(path) == -1)
@@ -26,7 +38,7 @@ static void cd_home(t_shell *shell)
 		shell->exit_status = 0;
 }
 
-void bin_cd(t_command *cmd, t_shell *shell)
+void	bin_cd(t_command *cmd, t_shell *shell)
 {
 	if (!cmd->av[1])
 		cd_home(shell);
@@ -37,21 +49,3 @@ void bin_cd(t_command *cmd, t_shell *shell)
 	else
 		shell->exit_status = 0;
 }
-
-// int main(int argc, char **argv)
-// {
-// 	t_shell shell;
-// 	t_command cmd;
-// 	// char *pwd = getcwd(NULL, 0);
-
-// 	// printf("cwd before cd ==> %s\n\n\n", pwd);
-// 	shell.exit_status = 0;
-
-// 	cmd.av = argv;
-
-// 	bin_cd(&cmd, &shell);
-// 	// pwd = getcwd(NULL, 0);
-// 	// printf("cwd after cd ==> %s\n\n\n", pwd);
-// 	printf("Exit status: %d\n", shell.exit_status);
-// 	return 0;
-// }
