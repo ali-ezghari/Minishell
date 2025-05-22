@@ -4,6 +4,8 @@
         "minishell.h": "c",
         "cstdlib": "c",
         "libft.h": "c",
-        "cerrno": "c"
+        "cerrno": "c",
+        "algorithm": "c",
+        "format": "c"
     }
 }

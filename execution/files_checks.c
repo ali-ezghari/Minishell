@@ -26,9 +26,9 @@ static int open_nd_redir(t_redir *redir, t_shell *shell)
         return (custom_cmd_err(strerror(errno), redir->filename, 1, shell), 1);
     redir->fd = fd;
     if (redir->type == T_REDIRECT_IN || redir->type == T_HEREDOC)
-        dup_in(fd, shell);
+        dup_in(fd);
     else
-        dup_out(fd, shell);
+        dup_out(fd);
     return (0);
 } 
 

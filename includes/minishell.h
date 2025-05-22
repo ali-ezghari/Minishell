@@ -117,6 +117,7 @@ void close_files(t_redir *redir);
 char *ft_getenv(char *key, t_env *env);
 void get_exit_code(int status, t_shell *shell);
 void execute_multiple_cmds(int count, t_command *cmd, t_shell *shell);
+void clean_up_fds(int count, int *fds);
 //
 // HEREDOC
 //
@@ -132,8 +133,8 @@ int ft_strcmp(const char *s1, const char *s2);
 void free_token_list(t_token *head);
 void free_token_array(char **arr);
 void pipe_err(t_shell *shell);
-void dup_in(int fd, t_shell *shell);
-void dup_out(int fd, t_shell *shell);
+void dup_in(int fd);
+void dup_out(int fd);
 void restore_fds(int in, int out);
 void custom_err(char *msg, char *name, int status, t_shell *shell);
 char *ft_strjoin_three(char *s1, char *s2, char *s3);

@@ -1,5 +1,14 @@
 #include "../includes/minishell.h"
 
+void clean_up_fds(int count, int *fds)
+{
+    int i;
+
+    i = 0;
+    while (i < count)
+        close(fds[i++]);
+}
+
 void dup_in(int fd, t_shell *shell)
 {
     if (dup2(fd, STDIN_FILENO) == -1)

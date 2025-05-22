@@ -6,7 +6,7 @@ static void wait_for_children(pid_t *pids, int cmd_count, t_shell *shell)
     int status;
 
     i = 0;
-    while (i < cmd_count + 1)
+    while (i < cmd_count)
         waitpid(pids[i++], &status, 0);
     get_exit_code(status, shell);
 }
@@ -28,51 +28,52 @@ static void exec_child(t_command *cmd, t_shell *shell)
     exit(1);
 }
 
+static int init_pids_fds(int cmd_count, pid_t **pids, int **fds, t_shell *shell)
+{
+    int i;
+
+    i = 0;
+    *pids = ft_malloc(sizeof(pid_t) * cmd_count, &shell->gc);
+    *fds = ft_malloc(sizeof(int) * 2 * (cmd_count - 1), &shell->gc);
+    if (!*pids || !*fds)
+        return (custom_err("malloc", NULL, 1, shell), 1);
+    while (i < cmd_count - 1)
+    {
+        if (pipe(*fds + i * 2) == -1)
+            return (custom_err("pipe", NULL, 1, shell), 1);
+        i++;
+    }
+    return (0);
+}
+static void child_pipes_setup(int *fds, int count, int i, t_shell *shell)
+{
+    if (i > 0)
+        dup_in(fds[(i - 1) * 2]);
+    if (i < count - 1)
+        dup_out(fds[i * 2 + 1]);
+    clean_up_fds(2 * (count - 1), fds);
+}
 void execute_multiple_cmds(int count, t_command *cmd, t_shell *shell)
 {
     pid_t *pids;
-    int fds[2];
-    int status;
-    int prev_fd;
-    int cmd_count;
+    int *fds;
+    int i;
 
-    cmd_count = -1;
-    prev_fd = -1;
-    pids = malloc(sizeof(pid_t) * (count));
-    if (!pids)
-        return custom_err("malloc", NULL, 1, shell);
-    // add_to_allocator(pids, &shell->gc); // ? uncomment this 
-    while (cmd)
+    if (init_pids_fds(count, &pids, &fds, shell) == 1)
+        return;
+    i = 0;
+    while (cmd && i < count)
     {
-        if (cmd->next)
-            if (pipe(fds) == -1)
-                return (pipe_err(shell));
-        pids[++cmd_count] = fork();
-        if (pids[cmd_count] == -1)
-            return (custom_err(strerror(errno), "pipe error", 1, shell));
-        if (pids[cmd_count] == 0)
+        pids[i] = fork();
+        if (pids[i] == 0)
         {
-            if (prev_fd != -1)
-                dup_in(prev_fd, shell);
-            if (cmd->next)
-            {
-                dup_out(fds[1], shell);
-                close(fds[0]);
-            }
+            shell->is_forked = 1;
+            child_pipes_setup(fds, count, i, shell);
             exec_child(cmd, shell);
         }
-        else
-        {
-            if (prev_fd != -1)
-                close(prev_fd);
-            if (cmd->next)
-            {
-                close(fds[1]);
-                prev_fd = fds[0];
-            }
-        }
-        restore_fds(shell->in_fd_b, shell->out_fd_b);
+        i++;
         cmd = cmd->next;
     }
-    wait_for_children(pids, cmd_count, shell);
+    clean_up_fds(2 * (count - 1), fds);
+    wait_for_children(pids, count, shell);
 }
