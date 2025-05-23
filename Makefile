@@ -14,7 +14,17 @@ SRCS = \
     builtins/pwd.c \
     builtins/unset.c \
     helper_funcs/helpers1.c \
-    helper_funcs/allocator.c
+    helper_funcs/allocator.c \
+    helper_funcs/helpers2.c \
+    helper_funcs/helpers3.c \
+    execution/executor.c \
+    execution/execute_one_cmd.c \
+    execution/execute_multiple_cmd \
+    execution/files_checks.c \
+    execution/get_path.c \
+    execution/heredoc_1.c \
+    execution/heredoc_2.c
+
 OBJS = $(SRCS:.c=.o)
 
 INCLUDES = minishell.h
