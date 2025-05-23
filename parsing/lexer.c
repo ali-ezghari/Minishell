@@ -1,18 +1,33 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aezghari <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/22 11:32:26 by aezghari          #+#    #+#             */
+/*   Updated: 2025/05/22 11:35:59 by aezghari         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 #include "../includes/utils.h"
+#include "../libft/libft.h"
 #include <string.h> // for strcmp
 
 t_token_type get_token_type(const char *s)
 {
-    if (strcmp(s, "|") == 0)
+    if (!s)
+        return T_WORD;
+    if (ft_strcmp(s, "|") == 0)
         return T_PIPE;
-    else if (strcmp(s, "<") == 0)
+    else if (ft_strcmp(s, "<") == 0)
         return T_REDIRECT_IN;
-    else if (strcmp(s, ">") == 0)
+    else if (ft_strcmp(s, ">") == 0)
         return T_REDIRECT_OUT;
-    else if (strcmp(s, ">>") == 0)
+    else if (ft_strcmp(s, ">>") == 0)
         return T_APPEND;
-    else if (strcmp(s, "<<") == 0)
+    else if (ft_strcmp(s, "<<") == 0)
         return T_HEREDOC;
     return T_WORD;
 }
@@ -23,15 +38,15 @@ t_token *new_token(char *val, t_allocator **gc)
     t_token *tok;
     char    *copy;
 
+    if (!val || !gc)
+        return NULL;
     tok = ft_malloc(sizeof(t_token), gc);
     if (!tok)
         return NULL;
-
-    copy = ft_malloc(strlen(val) + 1, gc);
+    copy = ft_malloc(ft_strlen(val) + 1, gc);
     if (!copy)
         return NULL;
-
-    strcpy(copy, val);
+    ft_strlcpy(copy, val, ft_strlen(val) + 1);
     tok->value = copy;
     tok->type = get_token_type(val);
     tok->next = NULL;
@@ -46,12 +61,13 @@ t_token *build_lexed_tokens(char **token_array, t_allocator **gc)
     t_token *new;
     int     i = 0;
 
+    if (!token_array || !gc)
+        return NULL;
     while (token_array[i])
     {
         new = new_token(token_array[i], gc);
         if (!new)
             return NULL;
-
         if (!head)
             head = new;
         else
@@ -63,7 +79,7 @@ t_token *build_lexed_tokens(char **token_array, t_allocator **gc)
 }
 
 /*
-// Example test main (make sure to free_all(gc) after)
+
 int main(void)
 {
     t_allocator *gc = NULL;

@@ -83,14 +83,16 @@ typedef struct s_shell
 // TOKENIZER / LEXER FUNCTIONS
 //
 
-char	**tokenize(const char *input, t_allocator **gc);
-char	*strndup_custom(const char *s, size_t n);
+char	**tokenize(const char *inp, t_allocator **gc);
+char	*ft_strndup(const char *s, size_t n);
 void	skip_spaces(const char **str);
 char	*get_quoted_token(const char **str);
 char	*get_operator_token(const char **str, t_allocator **gc);
 char	*get_env_var_token(const char **str);
 char	*get_word_token(const char **str);
 t_token	*build_lexed_tokens(char **token_array, t_allocator **gc);
+t_token	*new_token(char *val, t_allocator **gc);
+t_token_type get_token_type(const char *s);
 
 //
 // PARSING
@@ -141,4 +143,13 @@ void	dup_out(int fd);
 void	restore_fds(int in, int out);
 void	custom_err(char *msg, char *name, int status, t_shell *shell);
 void	add_string_array_to_allocator(char **arr, t_allocator **gc);
+
+//
+// Variable Expansion Functions
+//
+int		is_var_name(char c);
+int		is_valid_var_name(char *name);
+void	handle_exp(char **inp, t_shell *shell, int exit_status);
+void	ft_expand_vars(char **inp, t_shell *shell);
+void	ft_expand_exit_status(char **inp, int exit_status);
 #endif

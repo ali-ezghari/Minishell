@@ -23,7 +23,11 @@ SRCS = \
     execution/files_checks.c \
     execution/get_path.c \
     execution/heredoc_1.c \
-    execution/heredoc_2.c
+    execution/heredoc_2.c \
+    expansions/var_tools.c \
+    expansions/handle_exp.c \
+    expansions/expand_vars.c \
+    expansions/expand_exit_status.c
 
 OBJS = $(SRCS:.c=.o)
 
