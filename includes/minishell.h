@@ -155,4 +155,6 @@ int		is_valid_var_name(char *name);
 char	*handle_exp(char *inp, t_shell *shell, int exit_status);
 char	*ft_expand_vars(char *str, t_shell *shell);
 char	*ft_expand_exit_status(char *str, int exit_status);
+void	allocation_failure(t_shell *shell);
+
 #endif

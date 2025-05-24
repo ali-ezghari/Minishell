@@ -33,7 +33,7 @@ static void	exec_child(t_command *cmd, t_shell *shell)
 		exit(1);
 	full_cmd = get_path1(cmd->av[0], shell);
 	if (!full_cmd)
-		exit(shell->exit_status);
+		allocation_failure(shell);
 	if (execute_builtin(cmd, shell))
 		exit(shell->exit_status);
 	execve(full_cmd, cmd->av, shell->envs);
@@ -49,7 +49,7 @@ int	init_pids_fds(int cmd_count, pid_t **pids, int **fds, t_shell *shell)
 	*pids = ft_malloc(sizeof(pid_t) * cmd_count, &shell->gc);
 	*fds = ft_malloc(sizeof(int) * 2 * (cmd_count - 1), &shell->gc);
 	if (!*pids || !*fds)
-		return (custom_err("malloc", NULL, 1, shell), 1);
+		return (allocation_failure(shell), 1);
 	while (i < cmd_count - 1)
 	{
 		if (pipe(*fds + i * 2) == -1)
@@ -59,7 +59,7 @@ int	init_pids_fds(int cmd_count, pid_t **pids, int **fds, t_shell *shell)
 	return (0);
 }
 
-static void	child_pipes_setup(int *fds, int count, int i, t_shell *shell)
+static void	child_pipes_setup(int *fds, int count, int i)
 {
 	if (i > 0)
 		dup_in(fds[(i - 1) * 2]);
@@ -83,7 +83,7 @@ void	execute_multiple_cmds(int count, t_command *cmd, t_shell *shell)
 		if (pids[i] == 0)
 		{
 			shell->is_forked = 1;
-			child_pipes_setup(fds, count, i, shell);
+			child_pipes_setup(fds, count, i);
 			exec_child(cmd, shell);
 		}
 		i++;

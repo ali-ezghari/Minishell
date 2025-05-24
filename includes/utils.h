@@ -19,6 +19,7 @@ typedef struct s_allocator
 {
 	void					*ptr;
 	struct s_allocator		*next;
+	struct s_shell			*shell;
 }							t_allocator;
 
 void	*ft_malloc(size_t size, t_allocator **gc);
