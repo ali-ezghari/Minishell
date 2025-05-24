@@ -18,12 +18,11 @@ static void	child_pr(t_command *cmd, t_shell *shell)
 
 	if (!cmd->av || !cmd->av[0])
 		exit(0);
-	full_cmd = get_path1(cmd, shell);
+	full_cmd = get_path1(cmd->av[0], shell);
 	if (!full_cmd)
 		exit(shell->exit_status);
-	execve(full_cmd, cmd->av, shell->envp);
+	execve(full_cmd, cmd->av, shell->envs);
 	perror("execve");
-	//restore_fds(shell->in_fd_b, shell->out_fd_b);// ? not sure if needed
 	exit(127);
 }
 

@@ -154,5 +154,11 @@ int		is_var_name(char c);
 int		is_valid_var_name(char *name);
 char	*handle_exp(char *inp, t_shell *shell, int exit_status);
 char	*ft_expand_vars(char *str, t_shell *shell);
+<<<<<<< HEAD
 char	*ft_expand_exit_status(char *str, int exit_status, t_allocator **gc);
+=======
+char	*ft_expand_exit_status(char *str, int exit_status);
+void	allocation_failure(t_shell *shell);
+
+>>>>>>> refs/remotes/origin/main
 #endif

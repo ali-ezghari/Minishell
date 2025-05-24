@@ -21,7 +21,7 @@ void	clean_up_fds(int count, int *fds)
 		close(fds[i++]);
 }
 
-void	dup_in(int fd, t_shell *shell)
+void	dup_in(int fd)
 {
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
@@ -31,7 +31,7 @@ void	dup_in(int fd, t_shell *shell)
 	close(fd);
 }
 
-void	dup_out(int fd, t_shell *shell)
+void	dup_out(int fd)
 {
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{

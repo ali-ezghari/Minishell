@@ -37,3 +37,8 @@ void	add_string_array_to_allocator(char **arr, t_allocator **gc)
 		i++;
 	}
 }
+void	allocation_failure(t_shell *shell)
+{
+	free_all(&shell->gc);
+	exit(1);
+}
