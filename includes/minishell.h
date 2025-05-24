@@ -13,6 +13,9 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+#define TRUE 1
+#define FALSE 0
+
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
@@ -149,7 +152,7 @@ void	add_string_array_to_allocator(char **arr, t_allocator **gc);
 //
 int		is_var_name(char c);
 int		is_valid_var_name(char *name);
-void	handle_exp(char **inp, t_shell *shell, int exit_status);
-void	ft_expand_vars(char **inp, t_shell *shell);
-void	ft_expand_exit_status(char **inp, int exit_status);
+char	*handle_exp(char *inp, t_shell *shell, int exit_status);
+char	*ft_expand_vars(char *str, t_shell *shell);
+char	*ft_expand_exit_status(char *str, int exit_status);
 #endif

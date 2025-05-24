@@ -2,7 +2,6 @@
 
 #include "../includes/minishell.h"
 
-
 static char	*exit_status_pos(char *str)
 {
 	if (!str)
@@ -32,38 +31,48 @@ static char	*exit_status_pos(char *str)
 	return (NULL);
 }
 
-static void	update_inp(char **inp, char *exit_code, char *scnd_part)
+static char	*update_str(char *str, char *exit_code, char *scnd_part)
 {
 	char	*fst_part;
-	char	*update_inp;
+	char	*result;
 
-	if (!inp || !*inp || !exit_code)
-		return ;
-	fst_part = ft_strjoin(*inp, exit_code);
+	if (!str || !exit_code)
+		return (NULL);
+	fst_part = ft_strjoin(str, exit_code);
 	if (!fst_part)
-		return ;
-	update_inp = ft_strjoin(fst_part, scnd_part);
-	free(*inp);
+		return (NULL);
+	result = ft_strjoin(fst_part, scnd_part);
 	free(fst_part);
-	*inp = update_inp;
+	return (result);
 }
 
-void	ft_expand_exit_status(char **inp, int exit_status)
+char	*ft_expand_exit_status(char *str, int exit_status)
 {
-	char	*exit_status_pos;
+	char	*pos;
 	char	*exit_status_str;
+	char	*result;
+	char	*tmp;
 
-	if (!inp || !*inp)
-		return ;
-	exit_status_pos = exit_status_pos(*inp);
-	if (exit_status_pos)
+	if (!str)
+		return (NULL);
+	pos = exit_status_pos(str);
+	if (!pos)
+		return (ft_strdup(str));
+	tmp = ft_strndup(str, pos - str);
+	if (!tmp)
+		return (NULL);
+	exit_status_str = ft_itoa(exit_status);
+	if (!exit_status_str)
 	{
-		*exit_status_pos = '\0';
-		exit_status_str = ft_itoa(exit_status);
-		if (!exit_status_str)
-			return ;
-		update_inp(inp, exit_status_str, (exit_status_pos + 2));
-		free(exit_status_str);
-		ft_expand_exit_status(inp, exit_status);
+		free(tmp);
+		return (NULL);
 	}
+	result = update_str(tmp, exit_status_str, pos + 2);
+	free(tmp);
+	free(exit_status_str);
+	if (!result)
+		return (NULL);
+	tmp = ft_expand_exit_status(result, exit_status);
+	free(result);
+	return (tmp);
 }
