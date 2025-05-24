@@ -1,4 +1,3 @@
-
 #include "../includes/minishell.h"
 
 static char	*var_pos(char *str)
@@ -30,30 +29,34 @@ static char	*var_pos(char *str)
 	return (NULL);
 }
 
-static char	*get_env_value(char *var_name, t_env *envp)
+static char	*get_env_value(char *var_name, t_env *envp, t_allocator **gc)
 {
 	t_env	*current;
 	int		len;
 
-	if (!var_name || !envp)
-		return (NULL);
+	if (!var_name || !envp || !gc)
+		return (ft_strdup(""));
 	len = ft_strlen(var_name);
 	current = envp;
 	while (current)
 	{
-		if (ft_strncmp(current->name, var_name, len) == 0 && current->name[len] == '\0')
-			return (current->value);
+		if (ft_strncmp(current->key, var_name, len) == 0 && current->key[len] == '\0')
+		{
+			if (!current->value)
+				return (ft_strdup(""));
+			return (ft_strdup(current->value));
+		}
 		current = current->next;
 	}
-	return (NULL);
+	return (ft_strdup(""));
 }
 
-static char	*update_str(char *str, char *var_value, char *scnd_part)
+static char	*update_str(char *str, char *var_value, char *scnd_part, t_allocator **gc)
 {
 	char	*fst_part;
 	char	*result;
 
-	if (!str)
+	if (!str || !gc)
 		return (NULL);
 	if (!str[0] && !var_value)
 		fst_part = ft_strdup("");
@@ -77,9 +80,10 @@ char	*ft_expand_vars(char *str, t_shell *shell)
 	char	*var_name;
 	char	*result;
 	char	*tmp;
+	char	*next_part;
 	int		var_size;
 
-	if (!str || !shell || !shell->envp)
+	if (!str || !shell || !shell->envp || !shell->gc)
 		return (NULL);
 	pos = var_pos(str);
 	if (!pos)
@@ -90,19 +94,24 @@ char	*ft_expand_vars(char *str, t_shell *shell)
 	var_name = ft_substr(pos, 1, var_size);
 	if (!var_name)
 		return (NULL);
-	tmp = ft_strndup(str, pos - str);
+	tmp = ft_strndup(str, pos - str, shell->gc);
 	if (!tmp)
-	{
-		free(var_name);
-		return (NULL);
-	}
-	var_value = get_env_value(var_name, shell->envp);
-	result = update_str(tmp, var_value, pos + var_size + 1);
-	free(tmp);
+		return (free(var_name), NULL);
+	var_value = get_env_value(var_name, shell->envp, shell->gc);
 	free(var_name);
+	if (!var_value)
+		return (free(tmp), NULL);
+	next_part = ft_strdup(pos + var_size + 1);
+	if (!next_part)
+		return (free(tmp), free(var_value), NULL);
+	result = update_str(tmp, var_value, next_part, shell->gc);
 	if (!result)
-		return (NULL);
-	tmp = ft_expand_vars(result, shell);
-	free(result);
-	return (tmp);
+		return (free(tmp), free(var_value), free(next_part), NULL);
+
+	// don't free any part now; let GC handle it
+	char *expanded = ft_expand_vars(result, shell);
+	if (expanded != result)
+		return (expanded);
+	return result;
 }
+

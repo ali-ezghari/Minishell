@@ -73,7 +73,7 @@ typedef struct s_shell
 {
 	t_env		*envp;
 	char		**envs;
-	t_allocator	*gc;
+	t_allocator	**gc;
 	t_token		*tokens;
 	t_command	*cmds;
 	int			is_forked;
@@ -87,12 +87,12 @@ typedef struct s_shell
 //
 
 char	**tokenize(const char *inp, t_allocator **gc);
-char	*ft_strndup(const char *s, size_t n);
+char	*ft_strndup(const char *s, size_t n, t_allocator **gc);
 void	skip_spaces(const char **str);
-char	*get_quoted_token(const char **str);
+char	*get_quoted_token(const char **str, t_allocator **gc);
 char	*get_operator_token(const char **str, t_allocator **gc);
-char	*get_env_var_token(const char **str);
-char	*get_word_token(const char **str);
+char	*get_env_var_token(const char **str, t_allocator **gc);
+char	*get_word_token(const char **str, t_allocator **gc);
 t_token	*build_lexed_tokens(char **token_array, t_allocator **gc);
 t_token	*new_token(char *val, t_allocator **gc);
 t_token_type get_token_type(const char *s);
@@ -154,5 +154,5 @@ int		is_var_name(char c);
 int		is_valid_var_name(char *name);
 char	*handle_exp(char *inp, t_shell *shell, int exit_status);
 char	*ft_expand_vars(char *str, t_shell *shell);
-char	*ft_expand_exit_status(char *str, int exit_status);
+char	*ft_expand_exit_status(char *str, int exit_status, t_allocator **gc);
 #endif
