@@ -6,7 +6,7 @@
 /*   By: aezghari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 09:54:16 by aezghari          #+#    #+#             */
-/*   Updated: 2025/05/23 09:57:00 by aezghari         ###   ########.fr       */
+/*   Updated: 2025/05/26 18:38:40 by aezghari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ char	*quote_remover(char *del, int *expand, t_shell *shell)
 		if (del[i] == '"' || del[i] == '\'')
 			*expand = 0;
 		i++;
-    }
+	}
 	len = get_del_len(del);
 	return (allocate_del(del, len, shell));
 }

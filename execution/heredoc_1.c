@@ -12,12 +12,6 @@
 
 #include "../includes/minishell.h"
 
-char	*expand_heredoc(char *ln, t_shell *shell)
-{
-    // todo, once expand function is completed
-	return (ln);
-}
-
 static int	fill_heredoc(t_shell *shell, t_redir *redir)
 {
 	int		fd[2];
@@ -36,7 +30,7 @@ static int	fill_heredoc(t_shell *shell, t_redir *redir)
 		if (!rl || !ft_strcmp(rl, del))
 			break ;
 		if (expand == 1 && ft_strchr(rl, '$'))
-			rl = expand_heredoc(rl, shell);
+			rl = handle_exp(rl, shell, shell->exit_status);
 		write(fd[1], rl, ft_strlen(rl));
 		write(fd[1], "\n", 1);
 	}
