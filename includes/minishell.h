@@ -6,15 +6,15 @@
 /*   By: aezghari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:32:26 by aezghari          #+#    #+#             */
-/*   Updated: 2025/05/22 11:35:59 by aezghari         ###   ########.fr       */
+/*   Updated: 2025/05/26 18:14:33 by aezghari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#define TRUE 1
-#define FALSE 0
+# define TRUE 1
+# define FALSE 0
 
 # include <stdlib.h>
 # include <unistd.h>
@@ -73,7 +73,7 @@ typedef struct s_shell
 {
 	t_env		*envp;
 	char		**envs;
-	t_allocator	**gc;
+	t_allocator	*gc;
 	t_token		*tokens;
 	t_command	*cmds;
 	int			is_forked;
@@ -95,7 +95,7 @@ char	*get_env_var_token(const char **str, t_allocator **gc);
 char	*get_word_token(const char **str, t_allocator **gc);
 t_token	*build_lexed_tokens(char **token_array, t_allocator **gc);
 t_token	*new_token(char *val, t_allocator **gc);
-t_token_type get_token_type(const char *s);
+t_token_type	get_token_type(const char *s);
 
 //
 // PARSING
@@ -146,7 +146,7 @@ void	dup_out(int fd);
 void	restore_fds(int in, int out);
 void	custom_err(char *msg, char *name, int status, t_shell *shell);
 void	add_string_array_to_allocator(char **arr, t_allocator **gc);
-
+void	sort_env_list(t_env *env);
 //
 // Variable Expansion Functions
 //
@@ -157,5 +157,8 @@ char	*ft_expand_vars(char *str, t_shell *shell);
 char	*ft_expand_exit_status(char *str, int exit_status, t_allocator **gc);
 void	allocation_failure(t_shell *shell);
 t_env	*env_new(char *name, char *value, t_allocator **gc);
-
+char	*get_identifier(char *str, t_shell *shell);
+int		check_identifier(char *cmd, t_shell *shell);
+void	print_sorted_env(t_env *env, t_shell *shell);
+void	sort_env_list(t_env *env);
 #endif

@@ -74,6 +74,6 @@ void	bin_exit(t_command *cmd, t_shell *shell)
 		st = shell->exit_status;
 	else
 		st = check_errors(cmd, shell);
-	/* close fds & free data todo */
+	free_all(&shell->gc);
 	exit(st);
 }

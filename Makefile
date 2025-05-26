@@ -13,6 +13,8 @@ SRCS = \
     builtins/env.c \
     builtins/pwd.c \
     builtins/unset.c \
+    builtins/export.c \
+    builtins/export2.c \
     helper_funcs/helpers1.c \
     helper_funcs/allocator.c \
     helper_funcs/helpers2.c \
