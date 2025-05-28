@@ -46,32 +46,32 @@ int	main(void)
 
 	// Initialize shell structure
 	ft_memset(&shell, 0, sizeof(t_shell));
-	shell.gc = &gc;  // Set the pointer to the allocator pointer
+	shell.gc = gc;  // Set the allocator pointer directly
 
 	// Setup environment variables
-	new_env = env_new("USER", "fatouil", &gc);
+	new_env = env_new("USER", "fatouil", &shell.gc);
 	if (!new_env)
 	{
 		printf("Error: Failed to create USER environment variable\n");
-		free_all(&gc);
+		free_all(&shell.gc);
 		return (1);
 	}
 	env_add_back(&envp, new_env);
 
-	new_env = env_new("HOME", "/home/fatouil", &gc);
+	new_env = env_new("HOME", "/home/fatouil", &shell.gc);
 	if (!new_env)
 	{
 		printf("Error: Failed to create HOME environment variable\n");
-		free_all(&gc);
+		free_all(&shell.gc);
 		return (1);
 	}
 	env_add_back(&envp, new_env);
 
-	new_env = env_new("SHELL", "/bin/bash", &gc);
+	new_env = env_new("SHELL", "/bin/bash", &shell.gc);
 	if (!new_env)
 	{
 		printf("Error: Failed to create SHELL environment variable\n");
-		free_all(&gc);
+		free_all(&shell.gc);
 		return (1);
 	}
 	env_add_back(&envp, new_env);
@@ -79,11 +79,11 @@ int	main(void)
 	shell.envp = envp;
 
 	// Example input string
-	input = ft_malloc(ft_strlen("Hello $USER, your home is \"$HOME\" and last status was $?") + 1, &gc);
+	input = ft_malloc(ft_strlen("Hello $USER, your home is \"$HOME\" and last status was $?") + 1, &shell.gc);
 	if (!input)
 	{
 		printf("Error: Failed to allocate input string\n");
-		free_all(&gc);
+		free_all(&shell.gc);
 		return (1);
 	}
 	strcpy(input, "Hello $USER, your home is \"$HOME\" and last status was $?");
@@ -92,13 +92,13 @@ int	main(void)
 	if (!result)
 	{
 		printf("Error: Variable expansion failed\n");
-		free_all(&gc);
+		free_all(&shell.gc);
 		return (1);
 	}
 
 	printf("Expanded: %s\n", result);
 
 	// Clean up
-	free_all(&gc);
+	free_all(&shell.gc);
 	return (0);
 }

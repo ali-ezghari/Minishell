@@ -9,7 +9,7 @@ char	*handle_exp(char *inp, t_shell *shell, int exit_status)
 		return (NULL);
 
 	// First expand exit status
-	result = ft_expand_exit_status(inp, exit_status, shell->gc);
+	result = ft_expand_exit_status(inp, exit_status, &shell->gc);
 	if (!result)
 		return (NULL);
 

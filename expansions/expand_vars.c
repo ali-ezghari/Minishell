@@ -94,17 +94,17 @@ char	*ft_expand_vars(char *str, t_shell *shell)
 	var_name = ft_substr(pos, 1, var_size);
 	if (!var_name)
 		return (NULL);
-	tmp = ft_strndup(str, pos - str, shell->gc);
+	tmp = ft_strndup(str, pos - str, &shell->gc);
 	if (!tmp)
 		return (free(var_name), NULL);
-	var_value = get_env_value(var_name, shell->envp, shell->gc);
+	var_value = get_env_value(var_name, shell->envp, &shell->gc);
 	free(var_name);
 	if (!var_value)
 		return (free(tmp), NULL);
 	next_part = ft_strdup(pos + var_size + 1);
 	if (!next_part)
 		return (free(tmp), free(var_value), NULL);
-	result = update_str(tmp, var_value, next_part, shell->gc);
+	result = update_str(tmp, var_value, next_part, &shell->gc);
 	if (!result)
 		return (free(tmp), free(var_value), free(next_part), NULL);
 
