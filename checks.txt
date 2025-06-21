@@ -2,10 +2,10 @@ cmds:
 
 PASRSING:
 
-=>  hi| : causes segfault 
-=>  | : causes segfault
-=>  > : causes segfault
-=>  >> : causes segfault
+=>  hi| : causes segfault   || FIXED
+=>  | : causes segfault     || FIXED
+=>  > : causes segfault     || FIXED
+=>  >> : causes segfault    || FIXED
 => echo $? : doesn't expand 
 => echo $ : prints nothing
 => echo hi | "|" : causes syntax error but "|" should be treated as a string, so that it can be handled in the exection
