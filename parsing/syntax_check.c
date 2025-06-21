@@ -9,14 +9,17 @@ static int	is_redirection_type(t_token_type type)
 
 static int	check_pipe(t_token *tok, t_shell *shell)
 {
+	// Only check if current token is a pipe
 	if (tok->type != T_PIPE)
 		return (1);
+	// Syntax error: pipe at the end or double pipe
 	if (!tok->next || tok->next->type == T_PIPE)
 	{
 		print_synerror("|");
 		shell->exit_status = 2;
 		return (0);
 	}
+	// Syntax error: pipe at the beginning (handled in catch_syntax_errors)
 	return (1);
 }
 
