@@ -43,12 +43,9 @@ int	main(void)
 	char *result;
 	t_env *new_env;
 	t_allocator *gc = NULL;
-
-	// Initialize shell structure
+	
 	ft_memset(&shell, 0, sizeof(t_shell));
-	shell.gc = gc;  // Set the allocator pointer directly
-
-	// Setup environment variables
+	shell.gc = gc;
 	new_env = env_new("USER", "fatouil", &shell.gc);
 	if (!new_env)
 	{
@@ -57,7 +54,6 @@ int	main(void)
 		return (1);
 	}
 	env_add_back(&envp, new_env);
-
 	new_env = env_new("HOME", "/home/fatouil", &shell.gc);
 	if (!new_env)
 	{
@@ -75,10 +71,7 @@ int	main(void)
 		return (1);
 	}
 	env_add_back(&envp, new_env);
-
 	shell.envp = envp;
-
-	// Example input string
 	input = ft_malloc(ft_strlen("Hello $USER, your home is \"$HOME\" and last status was $?") + 1, &shell.gc);
 	if (!input)
 	{
@@ -87,7 +80,6 @@ int	main(void)
 		return (1);
 	}
 	strcpy(input, "Hello $USER, your home is \"$HOME\" and last status was $?");
-
 	result = handle_exp(input, &shell, 42);
 	if (!result)
 	{
@@ -95,10 +87,7 @@ int	main(void)
 		free_all(&shell.gc);
 		return (1);
 	}
-
 	printf("Expanded: %s\n", result);
-
-	// Clean up
 	free_all(&shell.gc);
 	return (0);
 }

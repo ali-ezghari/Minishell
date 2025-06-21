@@ -13,11 +13,7 @@
 #include "../includes/minishell.h"
 #include "../includes/utils.h"
 #include "../libft/libft.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-// Use your ft_strdup from libft but allocate with gc
 static char *gc_strdup(const char *s, t_allocator **gc)
 {
     char *copy;
@@ -33,7 +29,6 @@ static char *gc_strdup(const char *s, t_allocator **gc)
     return copy;
 }
 
-// Create a new redirection node using allocator gc
 static t_redir *new_redir(t_token_type type, char *filename, t_allocator **gc)
 {
     t_redir *redir;
@@ -52,7 +47,6 @@ static t_redir *new_redir(t_token_type type, char *filename, t_allocator **gc)
     return redir;
 }
 
-// Append redirection to the redir list
 static void add_redir(t_redir **redir_list, t_redir *new)
 {
     t_redir *tmp;
@@ -80,17 +74,13 @@ static void add_arg(char ***av, char *value, t_allocator **gc)
         return;
     if (*av)
     {
-        // count the number of existing args
         while ((*av)[count])
             count++;
     }
 
-    // allocate new array with space for one more arg + NULL terminator
     new_av = ft_malloc(sizeof(char *) * (count + 2), gc);
     if (!new_av)
         return;
-
-    // copy old pointers manually 
     i = 0;
     while (i < count)
     {
@@ -101,12 +91,10 @@ static void add_arg(char ***av, char *value, t_allocator **gc)
     new_av[count] = gc_strdup(value, gc);
     new_av[count + 1] = NULL;
 
-    // No free old *av because garbage collector will free it later
     *av = new_av;
 }
 
 
-// Create a new command node with gc allocator
 static t_command *new_command(t_allocator **gc)
 {
     t_command *cmd;
@@ -122,13 +110,14 @@ static t_command *new_command(t_allocator **gc)
     return cmd;
 }
 
-// Parse tokens into linked list of commands using gc allocator
-t_command *parse_tokens(t_token *tok, t_allocator **gc)
+t_command *parse_tokens(t_token *tok, t_shell *shell)
 {
     t_command *head;
     t_command *cur;
 
-    if (!tok || !gc)
+    if (!tok || !shell)
+        return NULL;
+    if (catch_syntax_errors(tok, shell))
         return NULL;
     head = NULL;
     cur = NULL;
@@ -136,7 +125,7 @@ t_command *parse_tokens(t_token *tok, t_allocator **gc)
     {
         if (!cur)
         {
-            cur = new_command(gc);
+            cur = new_command(&shell->gc);
             if (!cur)
                 return NULL;
             if (!head)
@@ -144,7 +133,7 @@ t_command *parse_tokens(t_token *tok, t_allocator **gc)
         }
         if (tok->type == T_WORD)
         {
-            add_arg(&cur->av, tok->value, gc);
+            add_arg(&cur->av, tok->value, &shell->gc);
         }
         else if (tok->type == T_REDIRECT_IN || tok->type == T_REDIRECT_OUT
             || tok->type == T_APPEND || tok->type == T_HEREDOC)
@@ -153,18 +142,18 @@ t_command *parse_tokens(t_token *tok, t_allocator **gc)
             {
                 t_redir *r;
 
-                r = new_redir(tok->type, tok->next->value, gc);
+                r = new_redir(tok->type, tok->next->value, &shell->gc);
                 if (!r)
                     return NULL;
                 add_redir(&cur->redirs, r);
-                tok = tok->next; // skip filename
+                tok = tok->next;
             }
         }
         else if (tok->type == T_PIPE)
         {
             t_command *next;
 
-            next = new_command(gc);
+            next = new_command(&shell->gc);
             if (!next)
                 return NULL;
             cur->next = next;

@@ -23,6 +23,18 @@ void print_commands(t_command *cmd)
 	}
 }
 
+void print_tokens(t_token *tokens)
+{
+	int i = 0;
+	printf("=== TOKENS ===\n");
+	while (tokens)
+	{
+		printf("Token[%d]: '%s' (type: %d)\n", i++, tokens->value, tokens->type);
+		tokens = tokens->next;
+	}
+	printf("==============\n");
+}
+
 void free_token_list(t_token *head)
 {
 	t_token *tmp;
@@ -118,7 +130,9 @@ int main(int argc, char **argv, char **envp)
 	shell.envs = envp;
 	shell.envp = init_env(envp, &shell.gc);
 	shell.exit_status = 0;
-
+	shell.tokens = NULL;
+	shell.cmds = NULL;
+	printf("Enter commands to test parsing. Type 'exit' to quit.\n\n");
 	while (1)
 	{
 		line = readline("minishell> ");
@@ -129,18 +143,55 @@ int main(int argc, char **argv, char **envp)
 		}
 		if (*line)
 			add_history(line);
-
-        token_array = tokenize(line, &shell.gc);
-        shell.tokens = build_lexed_tokens(token_array, &shell.gc);
-        shell.cmds = parse_tokens(shell.tokens, &shell.gc);
-
-		print_commands(shell.cmds);
-
+		if (!*line || (*line == ' ' && !*(line + 1)))
+		{
+			free(line);
+			continue;
+		}
+		if (check_unclosed_quotes(line))
+		{
+			printf("Quote check failed!\n");
+			free(line);
+			continue;
+		}
+		printf("Quote check passed\n");
+		token_array = tokenize(line, &shell.gc);
+		if (!token_array)
+		{
+			printf("Tokenization failed\n");
+			free(line);
+			continue;
+		}
+		printf("Tokenization completed\n");
+		shell.tokens = build_lexed_tokens(token_array, &shell.gc);
+		if (!shell.tokens)
+		{
+			printf("Lexer failed\n");
+			free(line);
+			continue;
+		}
+		printf("Lexer completed\n");
+		print_tokens(shell.tokens);
+		shell.cmds = parse_tokens(shell.tokens, &shell);
+		if (!shell.cmds)
+		{
+			printf("Parsing failed (syntax error or other issue)\n");
+			if (shell.exit_status == 2)
+				printf("Exit status: %d (syntax error)\n", shell.exit_status);
+		}
+		else
+		{
+			printf("Parsing completed successfully\n");
+			print_commands(shell.cmds);
+		}
 		free_token_array(token_array);
 		free_token_list(shell.tokens);
 		free_commands(shell.cmds);
 		free(line);
+		shell.tokens = NULL;
+		shell.cmds = NULL;
 	}
 	free_all(&shell.gc);
+	printf("Goodbye!\n");
 	return 0;
 }

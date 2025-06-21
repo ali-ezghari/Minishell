@@ -8,19 +8,21 @@ SRCS = \
     parsing/tokenize.c \
     parsing/parser.c \
     parsing/lexer.c \
-    builtins/echo.c \
+    parsing/syntax_check.c \
+    parsing/syntax_utils.c \
+    helper_funcs/helpers1.c \
+    helper_funcs/allocator.c \
+    helper_funcs/helpers2.c \
+    helper_funcs/helpers3.c \
+    #execution/executor.c 
+     #builtins/echo.c \
     builtins/cd.c \
     builtins/env.c \
     builtins/pwd.c \
     builtins/unset.c \
     builtins/export.c \
-    builtins/export2.c \
-    helper_funcs/helpers1.c \
-    helper_funcs/allocator.c \
-    helper_funcs/helpers2.c \
-    helper_funcs/helpers3.c \
-    execution/executor.c \
-    execution/execute_one_cmd.c \
+    builtins/export2.c \#
+    #execution/execute_one_cmd.c \
     execution/execute_multiple_cmd \
     execution/files_checks.c \
     execution/get_path.c \
@@ -29,7 +31,7 @@ SRCS = \
     expansions/var_tools.c \
     expansions/handle_exp.c \
     expansions/expand_vars.c \
-    expansions/expand_exit_status.c
+    expansions/expand_exit_status.c#
 
 OBJS = $(SRCS:.c=.o)
 

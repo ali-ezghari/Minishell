@@ -100,7 +100,8 @@ t_token_type	get_token_type(const char *s);
 //
 // PARSING
 //
-t_command	*parse_tokens(t_token *tokens, t_allocator **gc);
+t_command	*parse_tokens(t_token *tokens, t_shell *shell);
+int			catch_syntax_errors(t_token *tok, t_shell *shell);
 //
 // builtins
 //
@@ -160,5 +161,6 @@ t_env	*env_new(char *name, char *value, t_allocator **gc);
 char	*get_identifier(char *str, t_shell *shell);
 int		check_identifier(char *cmd, t_shell *shell);
 void	print_sorted_env(t_env *env, t_shell *shell);
-void	sort_env_list(t_env *env);
+int		print_synerror(const char *content);
+int		check_unclosed_quotes(const char *line);
 #endif

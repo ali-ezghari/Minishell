@@ -7,13 +7,9 @@ char	*handle_exp(char *inp, t_shell *shell, int exit_status)
 
 	if (!inp || !shell || !shell->envp || !shell->gc)
 		return (NULL);
-
-	// First expand exit status
 	result = ft_expand_exit_status(inp, exit_status, &shell->gc);
 	if (!result)
 		return (NULL);
-
-	// Then expand variables
 	tmp = ft_expand_vars(result, shell);
 	if (!tmp)
 	{
