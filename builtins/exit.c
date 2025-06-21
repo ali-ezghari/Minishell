@@ -69,7 +69,7 @@ void	bin_exit(t_command *cmd, t_shell *shell)
 
 	st = 0;
 	if (shell->is_forked == 0)
-		write(1, "exit\n", 5);
+		write(1, "exit\n", 5); 
 	if (!cmd->av[1])
 		st = shell->exit_status;
 	else

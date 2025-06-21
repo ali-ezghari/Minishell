@@ -26,6 +26,7 @@ static int	open_nd_redir(t_redir *redir, t_shell *shell)
 {
 	int	fd;
 
+	fd = 0;
 	if (redir->type == T_REDIRECT_IN)
 		fd = open(redir->filename, O_RDONLY);
 	else if (redir->type == T_REDIRECT_OUT)
@@ -35,7 +36,7 @@ static int	open_nd_redir(t_redir *redir, t_shell *shell)
 	else if (redir->type == T_HEREDOC)
 		fd = dup(redir->fd);
 	if (fd == -1)
-		return (custom_cmd_err(strerror(errno), redir->filename, 1, shell), 1);
+		return (custom_err(strerror(errno), redir->filename, 1, shell), 1);
 	redir->fd = fd;
 	if (redir->type == T_REDIRECT_IN || redir->type == T_HEREDOC)
 		dup_in(fd);

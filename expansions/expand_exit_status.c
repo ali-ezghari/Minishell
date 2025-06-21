@@ -29,7 +29,7 @@ static char	*exit_status_pos(char *str)
 	return (NULL);
 }
 
-static char	*update_str(char *str, char *exit_code, char *scnd_part, t_allocator **gc)
+static char	*update_str(char *str, char *exit_code, char *scnd_part)
 {
 	char	*fst_part;
 	char	*result;
@@ -66,10 +66,9 @@ char	*ft_expand_exit_status(char *str, int exit_status, t_allocator **gc)
 	next_part = ft_strdup(pos + 2);
 	if (!next_part)
 		return (free(tmp), free(exit_status_str), NULL);
-	result = update_str(tmp, exit_status_str, next_part, gc);
+	result = update_str(tmp, exit_status_str, next_part);
 	if (!result)
 		return (free(tmp), free(exit_status_str), free(next_part), NULL);
-
 	char *expanded = ft_expand_exit_status(result, exit_status, gc);
 	if (expanded != result)
 		return (expanded);

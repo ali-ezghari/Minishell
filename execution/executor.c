@@ -50,6 +50,7 @@ void	execution(t_shell *shell)
 	count = 0;
 	in_out_backup(shell); // ! put it inside the int main 
 	handle_heredoc(cmd, shell);
+	shell->is_forked = 0;
 	while (cmd)
 	{
 		count++;

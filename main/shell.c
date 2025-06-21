@@ -50,7 +50,8 @@ void free_token_list(t_token *head)
 void free_token_array(char **arr)
 {
 	int i = 0;
-	if (!arr) return;
+	if (!arr)
+		return;
 	while (arr[i])
 		free(arr[i++]);
 	free(arr);
@@ -184,6 +185,9 @@ int main(int argc, char **argv, char **envp)
 			printf("Parsing completed successfully\n");
 			print_commands(shell.cmds);
 		}
+
+		execution(&shell);
+		
 		free_token_array(token_array);
 		free_token_list(shell.tokens);
 		free_commands(shell.cmds);

@@ -6,6 +6,7 @@
         "libft.h": "c",
         "cerrno": "c",
         "algorithm": "c",
-        "format": "c"
+        "format": "c",
+        "errno.h": "c"
     }
 }

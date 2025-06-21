@@ -1,0 +1,27 @@
+
+
+cmds: 
+
+PASRSING:
+
+=>  hi| : causes segfault
+=>  | : causes segfault
+=>  > : causes segfault
+=>  >> : causes segfault
+=> echo $? : doesn't expand 
+=> echo $ : prints nothing
+=> echo hi | "|" : causes syntax error but "|" should be treated as a string, so that it can be handled in the exection
+
+
+
+
+
+
+
+
+EXECUTION: 
+
+=> exit : causes double free when a command or more been executed before it. problem in the int main.
+=> ./ : Permission denied, not like bash
+=> cat << "hi" : should not expand
+=> cat << hi : should expand

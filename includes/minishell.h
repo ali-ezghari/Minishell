@@ -29,7 +29,7 @@
 # include <sys/wait.h>
 # include "../libft/libft.h"
 # include "utils.h"
-
+#include <sys/stat.h>
 typedef enum e_token_type
 {
 	T_WORD,
@@ -135,7 +135,7 @@ char	*quote_remover(char *del, int *expand, t_shell *shell);
 //
 // Helpers
 //
-
+void	add_env_back(t_env **env_list, t_env *new_env);
 int		ft_strcmp(const char *s1, const char *s2);
 char	*ft_strjoin_three(char *s1, char *s2, char *s3);
 void	in_out_backup(t_shell *shell);
@@ -148,6 +148,8 @@ void	restore_fds(int in, int out);
 void	custom_err(char *msg, char *name, int status, t_shell *shell);
 void	add_string_array_to_allocator(char **arr, t_allocator **gc);
 void	sort_env_list(t_env *env);
+t_env	*new_env(char *key, char *value, t_shell *shell);
+
 //
 // Variable Expansion Functions
 //

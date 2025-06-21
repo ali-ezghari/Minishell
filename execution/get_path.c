@@ -14,10 +14,17 @@
 
 static char	*handle_direct_path(char *cmd, t_shell *shell)
 {
+	struct stat	st;
+
+	if (stat(cmd, &st) == 0 && S_ISDIR(st.st_mode))
+	{
+		custom_err(": Is a directory\n",cmd, 126, shell);
+		return (NULL);
+	}
 	if (access(cmd, F_OK) != 0)
-		return (custom_cmd_err(strerror(errno), cmd, 127, shell), NULL);
+		return (custom_err(strerror(errno), cmd, 127, shell), NULL);
 	if (access(cmd, X_OK) != 0)
-		return (custom_cmd_err(strerror(errno), cmd, 126, shell), NULL);
+		return (custom_err(strerror(errno), cmd, 126, shell), NULL);
 	return (ft_strdup(cmd));
 }
 

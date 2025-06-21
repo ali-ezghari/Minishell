@@ -12,6 +12,26 @@
 
 #include "../includes/minishell.h"
 
+static t_env	*copy_env_list(t_env *env, t_shell *shell)
+{
+	t_env	*copy;
+	t_env	*new_node;
+
+	copy = NULL;
+	while (env)
+	{
+		new_node = ft_malloc(sizeof(t_env), &shell->gc);
+		new_node->key = ft_strdup(env->key);
+		new_node->value = ft_strdup(env->value);
+		add_to_allocator(new_node->key, &shell->gc);
+		add_to_allocator(new_node->value, &shell->gc);
+		new_node->next = NULL;
+		add_env_back(&copy, new_node);
+		env = env->next;
+	}
+	return (copy);
+}
+
 void	print_sorted_env(t_env *env, t_shell *shell)
 {
 	t_env	*sorted;
