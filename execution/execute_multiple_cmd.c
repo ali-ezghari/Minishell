@@ -18,9 +18,10 @@ static void	wait_for_children(pid_t *pids, int cmd_count, t_shell *shell)
 	int	status;
 
 	i = 0;
+	status = 0;
 	while (i < cmd_count)
 		waitpid(pids[i++], &status, 0);
-	get_exit_code(status, shell);
+	get_exit_code(&status, shell);
 }
 
 static void	exec_child(t_command *cmd, t_shell *shell)

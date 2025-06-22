@@ -2,15 +2,19 @@ cmds:
 
 PASRSING:
 
-=>  hi| : causes segfault   || FIXED
-=>  | : causes segfault     || FIXED
-=>  > : causes segfault     || FIXED
-=>  >> : causes segfault    || FIXED
-=> echo $? : doesn't expand || FIXED
-=> echo $ : prints nothing  || FIXED
+=> echo ''$?''"42" : should prints only code followed 42 =>(042). but it prints (0  42). 
 => echo hi | "|" : causes syntax error but "|" should be treated as a string, so that it can be handled in the exection
+=> echo "exit_code ->$? user ->$USER home -> $HOME" : Doesn't expand nothing
+=> $/ : when you parse this command you remove the $. And i only receive /. the $ should remain. and i should receive the command like it was ($/)
+
+
 => exit : double free
 
+    => free_commands  → cleanup_shell → main
+
+    => free_all → bin_exit → execute_builtin → ...
+
+    reason: I use free_all function in builtin exit to free data and you free up the same thing in your free_commands function, i suppose that causes the double free
 
 
 
@@ -19,9 +23,3 @@ PASRSING:
 
 
 EXECUTION: 
-
-=> exit : causes double free when a command or more been executed before it. problem in the int main.
-=> ./ : Permission denied, not like bash
-=> cat << "hi" : should not expand
-=> cat << hi : should expand
-

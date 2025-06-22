@@ -207,7 +207,6 @@ int main(int argc, char **argv, char **envp)
 				execution(&shell);
 			}
 		}
-
 		cleanup_shell(&shell);
 		free(line);
 	}

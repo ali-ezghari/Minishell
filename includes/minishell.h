@@ -123,7 +123,7 @@ void	execution(t_shell *shell);
 char	*get_path1(char *cmd, t_shell *shell);
 void	close_files(t_redir *redir);
 char	*ft_getenv(char *key, t_env *env);
-void	get_exit_code(int status, t_shell *shell);
+void	get_exit_code(int *status, t_shell *shell);
 void	execute_multiple_cmds(int count, t_command *cmd, t_shell *shell);
 void	clean_up_fds(int count, int *fds);
 int		init_pids_fds(int cmd_count, pid_t **pids, int **fds, t_shell *shell);

@@ -44,5 +44,5 @@ void	execute_one_cmd(t_command *cmd, t_shell *shell)
 	if (child == 0)
 		child_pr(cmd, shell);
 	waitpid(child, &status, 0);
-	get_exit_code(status, shell);
+	get_exit_code(&status, shell);
 }
