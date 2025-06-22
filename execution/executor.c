@@ -43,23 +43,39 @@ int	execute_builtin(t_command *cmd, t_shell *shell)
 
 void	execution(t_shell *shell)
 {
-	t_command	*cmd;
-	int			count;
+	t_command *cmd = shell->cmds;
+	pid_t pid;
+	int status;
 
-	cmd = shell->cmds;
-	count = 0;
-	in_out_backup(shell); // ! put it inside the int main 
-	handle_heredoc(cmd, shell);
-	shell->is_forked = 0;
-	while (cmd)
+	if (!cmd || !cmd->av || !cmd->av[0])
+		return;
+
+	// Handle built-in commands
+	if (execute_builtin(cmd, shell))
+		return;
+
+	pid = fork();
+	if (pid == 0)
 	{
-		count++;
-		cmd = cmd->next;
+		// Child process
+		char *path = get_path1(cmd->av[0], shell);
+		if (!path)
+		{
+			fprintf(stderr, "minishell: %s: command not found\n", cmd->av[0]);
+			exit(127);
+		}
+		execve(path, cmd->av, shell->envs);
+		perror("minishell");
+		exit(126);
 	}
-	if (count == 1)
-		execute_one_cmd(shell->cmds, shell);
-	else if (count > 1)
-		execute_multiple_cmds(count, shell->cmds, shell);
-	close_files(shell->cmds->redirs);
-	restore_fds(shell->out_fd_b, shell->in_fd_b);
+	else if (pid > 0)
+	{
+		waitpid(pid, &status, 0);
+		shell->exit_status = WEXITSTATUS(status);
+	}
+	else
+	{
+		perror("minishell");
+		shell->exit_status = 1;
+	}
 }

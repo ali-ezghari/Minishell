@@ -14,6 +14,12 @@
 #include "../includes/utils.h"
 #include "../libft/libft.h"
 
+static int is_redirection_type(t_token_type type)
+{
+    return (type == T_REDIRECT_IN || type == T_REDIRECT_OUT
+        || type == T_APPEND || type == T_HEREDOC);
+}
+
 static char *gc_strdup(const char *s, t_allocator **gc)
 {
     char *copy;
@@ -112,13 +118,14 @@ static t_command *new_command(t_allocator **gc)
 
 t_command *parse_tokens(t_token *tok, t_shell *shell)
 {
-    t_command *head;
-    t_command *cur;
+    t_command *head = NULL;
+    t_command *cur = NULL;
 
     if (!tok || !shell)
         return NULL;
     if (catch_syntax_errors(tok, shell))
         return NULL;
+
     head = NULL;
     cur = NULL;
     while (tok)
@@ -131,29 +138,43 @@ t_command *parse_tokens(t_token *tok, t_shell *shell)
             if (!head)
                 head = cur;
         }
-        if (tok->type == T_WORD)
+
+        if (tok->type == T_WORD || tok->quoted)
         {
-            add_arg(&cur->av, tok->value, &shell->gc);
+            char *value = tok->value;
+            if (tok->quoted)
+            {
+                // Remove surrounding quotes but preserve the content
+                size_t len = strlen(value);
+                if (len >= 2)
+                {
+                    char *unquoted = ft_substr(value, 1, len - 2);
+                    add_arg(&cur->av, unquoted, &shell->gc);
+                }
+                else
+                {
+                    add_arg(&cur->av, "", &shell->gc);
+                }
+            }
+            else
+            {
+                add_arg(&cur->av, value, &shell->gc);
+            }
         }
-        else if (tok->type == T_REDIRECT_IN || tok->type == T_REDIRECT_OUT
-            || tok->type == T_APPEND || tok->type == T_HEREDOC)
+        else if (is_redirection_type(tok->type) && !tok->quoted)
         {
             if (tok->next)
             {
-                t_redir *r;
-
-                r = new_redir(tok->type, tok->next->value, &shell->gc);
+                t_redir *r = new_redir(tok->type, tok->next->value, &shell->gc);
                 if (!r)
                     return NULL;
                 add_redir(&cur->redirs, r);
                 tok = tok->next;
             }
         }
-        else if (tok->type == T_PIPE)
+        else if (tok->type == T_PIPE && !tok->quoted)
         {
-            t_command *next;
-
-            next = new_command(&shell->gc);
+            t_command *next = new_command(&shell->gc);
             if (!next)
                 return NULL;
             cur->next = next;

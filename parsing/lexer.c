@@ -36,9 +36,13 @@ t_token *new_token(char *val, t_allocator **gc)
 {
     t_token *tok;
     char    *copy;
+    int     quoted = 0;
 
     if (!val || !gc)
         return NULL;
+    // Check if the value is quoted
+    if ((val[0] == '"' || val[0] == '\'') && val[strlen(val)-1] == val[0])
+        quoted = 1;
     tok = ft_malloc(sizeof(t_token), gc);
     if (!tok)
         return NULL;
@@ -47,8 +51,12 @@ t_token *new_token(char *val, t_allocator **gc)
         return NULL;
     ft_strlcpy(copy, val, ft_strlen(val) + 1);
     tok->value = copy;
-    tok->type = get_token_type(val);
+    if (quoted)
+        tok->type = get_token_type(copy + 1);
+    else
+        tok->type = get_token_type(copy);
     tok->next = NULL;
+    tok->quoted = quoted;
     return tok;
 }
 

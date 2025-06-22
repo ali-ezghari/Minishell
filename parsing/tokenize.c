@@ -50,9 +50,10 @@ char	*get_quoted_token(const char **str, t_allocator **gc)
 	char		quote;
 	const char	*start;
 	size_t		len;
+	char		*token;
 
 	if (!str || !*str || !**str || !gc)
-		return (NULL);
+		return NULL;
 	quote = **str;
 	(*str)++;
 	start = *str;
@@ -61,7 +62,15 @@ char	*get_quoted_token(const char **str, t_allocator **gc)
 	len = *str - start;
 	if (**str == quote)
 		(*str)++;
-	return (ft_strndup(start, len, gc));
+	// Create token including the quotes
+	token = ft_malloc(len + 3, gc); // +3 for two quotes and null terminator
+	if (!token)
+		return NULL;
+	token[0] = quote;
+	ft_memcpy(token + 1, start, len);
+	token[len + 1] = quote;
+	token[len + 2] = '\0';
+	return token;
 }
 
 char	*get_operator_token(const char **str, t_allocator **gc)
@@ -86,16 +95,66 @@ char	*get_operator_token(const char **str, t_allocator **gc)
 	return (token);
 }
 
-char	*get_env_var_token(const char **str, t_allocator **gc)
+char	*get_env_var_token(const char **str, t_allocator **gc, t_shell *shell)
 {
 	const char	*start;
 	size_t		len;
 	char		*var_name;
 	char		*value;
+	char		*result;
 
 	if (!str || !*str || !**str || !gc)
 		return (NULL);
 	(*str)++;
+	// Handle $? case (exit status)
+	if (**str == '?')
+	{
+		(*str)++;
+		if (shell)
+		{
+			result = ft_itoa(shell->exit_status);
+			if (result)
+			{
+				char *gc_result = ft_malloc(ft_strlen(result) + 1, gc);
+				if (gc_result)
+				{
+					ft_strlcpy(gc_result, result, ft_strlen(result) + 1);
+					free(result);
+					return gc_result;
+				}
+				free(result);
+			}
+			return NULL;
+		}
+		else
+		{
+			result = ft_itoa(0);
+			if (result)
+			{
+				char *gc_result = ft_malloc(ft_strlen(result) + 1, gc);
+				if (gc_result)
+				{
+					ft_strlcpy(gc_result, result, ft_strlen(result) + 1);
+					free(result);
+					return gc_result;
+				}
+				free(result);
+			}
+			return NULL;
+		}
+	}
+	// Handle lone $ case
+	if (!**str || **str == ' ' || **str == '\'' || **str == '"' || **str == '$')
+	{
+		char *gc_result = ft_malloc(2, gc);
+		if (gc_result)
+		{
+			gc_result[0] = '$';
+			gc_result[1] = '\0';
+			return gc_result;
+		}
+		return NULL;
+	}
 	start = *str;
 	while (**str && (ft_isalnum(**str) || **str == '_'))
 		(*str)++;
@@ -104,10 +163,23 @@ char	*get_env_var_token(const char **str, t_allocator **gc)
 	if (!var_name)
 		return (NULL);
 	value = getenv(var_name);
-	free(var_name);
 	if (!value)
-		return (ft_strdup(""));
-	return (ft_strdup(value));
+	{
+		char *gc_result = ft_malloc(1, gc);
+		if (gc_result)
+		{
+			gc_result[0] = '\0';
+			return gc_result;
+		}
+		return NULL;
+	}
+	result = ft_malloc(ft_strlen(value) + 1, gc);
+	if (result)
+	{
+		ft_strlcpy(result, value, ft_strlen(value) + 1);
+		return result;
+	}
+	return NULL;
 }
 
 char	*get_word_token(const char **str, t_allocator **gc)
@@ -124,7 +196,7 @@ char	*get_word_token(const char **str, t_allocator **gc)
 	return (ft_strndup(start, *str - start, gc));
 }
 
-char	**tokenize(const char *inp, t_allocator **gc)
+char	**tokenize(const char *inp, t_allocator **gc, t_shell *shell)
 {
 	const char	*p;
 	char		**tokens;
@@ -145,7 +217,7 @@ char	**tokenize(const char *inp, t_allocator **gc)
 		if (*p == '"' || *p == '\'')
 			tokens[i++] = get_quoted_token(&p, gc);
 		else if (*p == '$')
-			tokens[i++] = get_env_var_token(&p, gc);
+			tokens[i++] = get_env_var_token(&p, gc, shell);
 		else if (IS_OPERATOR(*p))
 			tokens[i++] = get_operator_token(&p, gc);
 		else

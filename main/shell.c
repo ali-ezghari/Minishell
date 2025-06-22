@@ -12,15 +12,22 @@ void print_redirs(t_redir *redir)
 
 void print_commands(t_command *cmd)
 {
-	int i = 0;
-	while (cmd)
-	{
-		printf("Command %d:\n", i++);
-		for (int j = 0; cmd->av && cmd->av[j]; j++)
-			printf("  Arg[%d]: %s\n", j, cmd->av[j]);
-		print_redirs(cmd->redirs);
-		cmd = cmd->next;
-	}
+    int i = 0;
+    while (cmd)
+    {
+        printf("Command %d:\n", i++);
+        int j = 0;
+        if (cmd->av)
+        {
+            while (cmd->av[j])
+            {
+                printf("  Arg[%d]: %s\n", j, cmd->av[j]);
+                j++;
+            }
+        }
+        print_redirs(cmd->redirs);
+        cmd = cmd->next;
+    }
 }
 
 void print_tokens(t_token *tokens)
@@ -41,7 +48,6 @@ void free_token_list(t_token *head)
 	while (head)
 	{
 		tmp = head->next;
-		free(head->value);
 		free(head);
 		head = tmp;
 	}
@@ -75,10 +81,6 @@ void free_commands(t_command *cmd)
 	while (cmd)
 	{
 		tmp = cmd->next;
-		for (int i = 0; cmd->av && cmd->av[i]; i++)
-			free(cmd->av[i]);
-		free(cmd->av);
-		free_redirs(cmd->redirs);
 		free(cmd);
 		cmd = tmp;
 	}
@@ -119,6 +121,16 @@ t_env *init_env(char **envp, t_allocator **gc)
 	return head;
 }
 
+void cleanup_shell(t_shell *shell)
+{
+    if (shell->tokens)
+        free_token_list(shell->tokens);
+    if (shell->cmds)
+        free_commands(shell->cmds);
+    shell->tokens = NULL;
+    shell->cmds = NULL;
+}
+
 int main(int argc, char **argv, char **envp)
 {
 	t_shell shell;
@@ -156,7 +168,7 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 		printf("Quote check passed\n");
-		token_array = tokenize(line, &shell.gc);
+		token_array = tokenize(line, &shell.gc, &shell);
 		if (!token_array)
 		{
 			printf("Tokenization failed\n");
@@ -184,17 +196,20 @@ int main(int argc, char **argv, char **envp)
 		{
 			printf("Parsing completed successfully\n");
 			print_commands(shell.cmds);
-			execution(&shell);
+			if (shell.cmds->av && shell.cmds->av[0] && 
+				strcmp(shell.cmds->av[0], "exit") == 0)
+			{
+				execution(&shell);
+				break;
+			}
+			else
+			{
+				execution(&shell);
+			}
 		}
 
-		free_token_array(token_array);
-		free_token_list(shell.tokens);
-		free_commands(shell.cmds);
+		cleanup_shell(&shell);
 		free(line);
-		shell.tokens = NULL;
-		shell.cmds = NULL;
 	}
-	free_all(&shell.gc);
-	printf("Goodbye!\n");
 	return 0;
 }

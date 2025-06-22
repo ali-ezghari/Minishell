@@ -52,6 +52,7 @@ typedef struct s_token
 	char			*value;
 	t_token_type	type;
 	struct s_token	*next;
+	int			quoted;
 }					t_token;
 
 typedef struct s_redir
@@ -86,12 +87,12 @@ typedef struct s_shell
 // TOKENIZER / LEXER FUNCTIONS
 //
 
-char	**tokenize(const char *inp, t_allocator **gc);
+char	**tokenize(const char *inp, t_allocator **gc, t_shell *shell);
 char	*ft_strndup(const char *s, size_t n, t_allocator **gc);
 void	skip_spaces(const char **str);
 char	*get_quoted_token(const char **str, t_allocator **gc);
 char	*get_operator_token(const char **str, t_allocator **gc);
-char	*get_env_var_token(const char **str, t_allocator **gc);
+char	*get_env_var_token(const char **str, t_allocator **gc, t_shell *shell);
 char	*get_word_token(const char **str, t_allocator **gc);
 t_token	*build_lexed_tokens(char **token_array, t_allocator **gc);
 t_token	*new_token(char *val, t_allocator **gc);
@@ -149,6 +150,7 @@ void	custom_err(char *msg, char *name, int status, t_shell *shell);
 void	add_string_array_to_allocator(char **arr, t_allocator **gc);
 void	sort_env_list(t_env *env);
 t_env	*new_env(char *key, char *value, t_shell *shell);
+void	cleanup_shell(t_shell *shell);
 
 //
 // Variable Expansion Functions

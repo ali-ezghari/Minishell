@@ -9,22 +9,25 @@ static int	is_redirection_type(t_token_type type)
 
 static int	check_pipe(t_token *tok, t_shell *shell)
 {
-	// Only check if current token is a pipe
+	// Skip if the token is quoted (single or double quotes)
+	if (tok->quoted)
+		return (1);
 	if (tok->type != T_PIPE)
 		return (1);
-	// Syntax error: pipe at the end or double pipe
 	if (!tok->next || tok->next->type == T_PIPE)
 	{
 		print_synerror("|");
 		shell->exit_status = 2;
 		return (0);
 	}
-	// Syntax error: pipe at the beginning (handled in catch_syntax_errors)
 	return (1);
 }
 
 static int	check_redirection(t_token *tok, t_shell *shell)
 {
+	// Skip if the token is quoted (single or double quotes)
+	if (tok->quoted)
+		return (1);
 	if (!is_redirection_type(tok->type))
 		return (1);
 	if (!tok->next || tok->next->type != T_WORD)
@@ -40,7 +43,8 @@ int	catch_syntax_errors(t_token *tok, t_shell *shell)
 {
 	if (!tok || !shell)
 		return (0);
-	if (tok->type == T_PIPE)
+	// Check for pipe at start
+	if (tok->type == T_PIPE && !tok->quoted)
 	{
 		print_synerror("|");
 		shell->exit_status = 2;
@@ -48,8 +52,12 @@ int	catch_syntax_errors(t_token *tok, t_shell *shell)
 	}
 	while (tok)
 	{
-		if (!check_pipe(tok, shell) || !check_redirection(tok, shell))
-			return (1);
+		// Skip quoted tokens for syntax checking
+		if (!tok->quoted)
+		{
+			if (!check_pipe(tok, shell) || !check_redirection(tok, shell))
+				return (1);
+		}
 		tok = tok->next;
 	}
 	return (0);
