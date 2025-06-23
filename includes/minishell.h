@@ -151,7 +151,7 @@ void	add_string_array_to_allocator(char **arr, t_allocator **gc);
 void	sort_env_list(t_env *env);
 t_env	*new_env(char *key, char *value, t_shell *shell);
 void	cleanup_shell(t_shell *shell);
-
+char **env_list_to_array(t_env *env, t_shell *shell);
 //
 // Variable Expansion Functions
 //

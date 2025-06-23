@@ -32,12 +32,12 @@ static void	exec_child(t_command *cmd, t_shell *shell)
 		exit(0);
 	if (open_files(cmd->redirs, shell))
 		exit(1);
+	if (execute_builtin(cmd, shell))
+		exit(shell->exit_status);
 	full_cmd = get_path1(cmd->av[0], shell);
 	if (!full_cmd)
 		allocation_failure(shell);
-	if (execute_builtin(cmd, shell))
-		exit(shell->exit_status);
-	execve(full_cmd, cmd->av, shell->envs);
+	execve(full_cmd, cmd->av, env_list_to_array(shell->envp, shell));
 	perror("execve");
 	exit(1);
 }

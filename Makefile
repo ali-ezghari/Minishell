@@ -32,8 +32,8 @@ SRCS = \
     expansions/var_tools.c \
     expansions/handle_exp.c \
     expansions/expand_vars.c \
-    expansions/expand_exit_status.c
-
+    expansions/expand_exit_status.c \
+    execution/environment.c
 OBJS = $(SRCS:.c=.o)
 
 INCLUDES = minishell.h

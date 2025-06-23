@@ -151,7 +151,6 @@ int main(int argc, char **argv, char **envp)
 		line = readline("minishell> ");
 		if (!line)
 		{
-			printf("exit\n");
 			break;
 		}
 		if (*line)

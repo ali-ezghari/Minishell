@@ -49,10 +49,11 @@ void	*ft_malloc(size_t size, t_allocator **gc)
 void	free_all(t_allocator **gc)
 {
 	t_allocator	*tmp;
-
+	
 	while (*gc)
 	{
-		free((*gc)->ptr);
+		if ((*gc)->ptr)
+            free((*gc)->ptr);
 		tmp = *gc;
 		*gc = (*gc)->next;
 		free(tmp);
