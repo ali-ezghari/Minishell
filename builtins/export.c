@@ -43,7 +43,7 @@ static void	update_env(t_env **envp, t_env *env, t_shell *shell)
 			if (!env->value)
 				return ;
 			head->value = ft_strdup(env->value);
-			add_to_allocator(head->value, &shell->gc);
+			add_to_allocator(head->value);
 			return ;
 		}
 		head = head->next;

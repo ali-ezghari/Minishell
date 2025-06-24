@@ -26,7 +26,7 @@ static int	fill_heredoc(t_shell *shell, t_redir *redir)
 	{
 		rl = readline("> ");
 		if (rl)
-			add_to_allocator(rl, &shell->gc);
+			add_to_allocator(rl);
 		if (!rl || !ft_strcmp(rl, del))
 			break ;
 		if (expand == 1 && ft_strchr(rl, '$'))

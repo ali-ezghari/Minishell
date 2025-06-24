@@ -19,10 +19,8 @@ typedef struct s_allocator
 {
 	void					*ptr;
 	struct s_allocator		*next;
-	struct s_shell			*shell;
 }							t_allocator;
 
-void	*ft_malloc(size_t size, t_allocator **gc);
-void	free_all(t_allocator **gc);
-void	add_to_allocator(void *ptr, t_allocator **gc);
+void	*ft_malloc(size_t size);
+void	add_to_allocator(void *ptr);
 #endif

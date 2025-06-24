@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-void	add_to_allocator(void *ptr, t_allocator **gc)
+void	add_to_allocator(void *ptr)
 {
 	t_allocator	*new;
 
@@ -22,40 +22,21 @@ void	add_to_allocator(void *ptr, t_allocator **gc)
 	if (!new)
 		return ;
 	new->ptr = ptr;
-	new->next = *gc;
-	*gc = new;
+	ft_lstadd_back(&gc, new);
 }
 
-void	*ft_malloc(size_t size, t_allocator **gc)
+void	*ft_malloc(size_t size)
 {
 	void		*ptr;
 	t_allocator	*new;
 
 	ptr = malloc(size);
 	if (!ptr)
-		return (NULL);
+		return (allocation_failure(), NULL);
 	new = malloc(sizeof(t_allocator));
 	if (!new)
-	{
-		free(ptr);
-		return (NULL);
-	}
+		return (allocation_failure(), NULL);
 	new->ptr = ptr;
-	new->next = *gc;
-	*gc = new;
+	ft_lstadd_back(&gc, new);
 	return (ptr);
-}
-
-void	free_all(t_allocator **gc)
-{
-	t_allocator	*tmp;
-	
-	while (*gc)
-	{
-		if ((*gc)->ptr)
-            free((*gc)->ptr);
-		tmp = *gc;
-		*gc = (*gc)->next;
-		free(tmp);
-	}
 }

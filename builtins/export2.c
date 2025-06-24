@@ -20,11 +20,11 @@ static t_env	*copy_env_list(t_env *env, t_shell *shell)
 	copy = NULL;
 	while (env)
 	{
-		new_node = ft_malloc(sizeof(t_env), &shell->gc);
+		new_node = ft_malloc(sizeof(t_env));
 		new_node->key = ft_strdup(env->key);
 		new_node->value = ft_strdup(env->value);
-		add_to_allocator(new_node->key, &shell->gc);
-		add_to_allocator(new_node->value, &shell->gc);
+		add_to_allocator(new_node->key);
+		add_to_allocator(new_node->value);
 		new_node->next = NULL;
 		add_env_back(&copy, new_node);
 		env = env->next;
@@ -64,7 +64,7 @@ int	check_identifier(char *cmd, t_shell *shell)
 	return (0);
 }
 
-char	*get_identifier(char *str, t_shell *shell)
+char	*get_identifier(char *str)
 {
 	int		len;
 	char	*str_2;
@@ -74,7 +74,7 @@ char	*get_identifier(char *str, t_shell *shell)
 		len++;
 	str_2 = ft_substr(str, 0, len);
 	if (!str_2)
-		allocation_failure(shell);
+		allocation_failure();
 	return (str_2);
 }
 

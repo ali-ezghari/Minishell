@@ -36,7 +36,7 @@ static void	exec_child(t_command *cmd, t_shell *shell)
 		exit(shell->exit_status);
 	full_cmd = get_path1(cmd->av[0], shell);
 	if (!full_cmd)
-		allocation_failure(shell);
+		allocation_failure();
 	execve(full_cmd, cmd->av, env_list_to_array(shell->envp, shell));
 	perror("execve");
 	exit(1);
@@ -47,10 +47,8 @@ int	init_pids_fds(int cmd_count, pid_t **pids, int **fds, t_shell *shell)
 	int	i;
 
 	i = 0;
-	*pids = ft_malloc(sizeof(pid_t) * cmd_count, &shell->gc);
-	*fds = ft_malloc(sizeof(int) * 2 * (cmd_count - 1), &shell->gc);
-	if (!*pids || !*fds)
-		return (allocation_failure(shell), 1);
+	*pids = ft_malloc(sizeof(pid_t) * cmd_count);
+	*fds = ft_malloc(sizeof(int) * 2 * (cmd_count - 1));
 	while (i < cmd_count - 1)
 	{
 		if (pipe(*fds + i * 2) == -1)

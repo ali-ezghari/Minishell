@@ -19,9 +19,7 @@ static char *join_env_var(char *key, char *value, t_shell *shell)
     char *str;
 
     len = ft_strlen(key) + ft_strlen(value) + 2;
-    str = ft_malloc(len, &shell->gc);
-    if (!str)
-        return (allocation_failure(shell), NULL);
+    str = ft_malloc(len);
     ft_strlcpy(str, key, len);
     ft_strlcat(str, "=", len);
     ft_strlcat(str, value, len);
@@ -38,15 +36,15 @@ char **env_list_to_array(t_env *env, t_shell *shell)
     size = env_list_size(env);
     env_array = malloc((size + 1) * sizeof(char *));
     if (!env_array)
-        return (allocation_failure(shell), NULL);
+        return (allocation_failure(), NULL);
     while (env)
     {
         env_array[i] = join_env_var(env->key, env->value, shell);
         if (!env_array[i])
-            return (allocation_failure(shell), NULL);
+            return (allocation_failure(), NULL);
         i++;
         env = env->next;
     }
     env_array[i] = NULL;
-    return env_array;
+    return (env_array);
 }

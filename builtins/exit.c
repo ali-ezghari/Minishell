@@ -72,10 +72,10 @@ void	bin_exit(t_command *cmd, t_shell *shell)
 		st = shell->exit_status;
 	else
 		st = check_errors(cmd, shell);
-	close_files(cmd->redirs);
-	restore_fds(shell->in_fd_b, shell->out_fd_b);
-	free_all(&shell->gc);
 	if (shell->is_forked == 0)
 		write(1, "exit\n", 5); 
+	close_files(cmd->redirs);
+	restore_fds(shell->in_fd_b, shell->out_fd_b);
+	ft_lstclear(&gc, free);
 	exit(st);
 }

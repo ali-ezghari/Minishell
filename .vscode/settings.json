@@ -7,6 +7,7 @@
         "cerrno": "c",
         "algorithm": "c",
         "format": "c",
-        "errno.h": "c"
+        "errno.h": "c",
+        "charconv": "c"
     }
 }

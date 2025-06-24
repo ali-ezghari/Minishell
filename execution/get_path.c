@@ -37,7 +37,7 @@ static char	*get_path2(char *cmd, char **paths_arr, t_shell *shell)
 	while (paths_arr[i])
 	{
 		full_cmd = ft_strjoin_three(paths_arr[i], "/", cmd);
-		add_to_allocator(full_cmd, &shell->gc);
+		add_to_allocator(full_cmd);
 		if (!full_cmd)
 		{
 			shell->exit_status = 1;
@@ -70,7 +70,7 @@ char	*get_path1(char *cmd, t_shell *shell)
 		shell->exit_status = 1;
 		return (NULL);
 	}
-	add_string_array_to_allocator(paths_arr, &shell->gc);
+	add_string_array_to_allocator(paths_arr);
 	full_cmd = get_path2(cmd, paths_arr, shell);
 	return (full_cmd);
 }

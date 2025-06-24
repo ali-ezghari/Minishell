@@ -86,7 +86,7 @@ void free_commands(t_command *cmd)
 	}
 }
 
-t_env *init_env(char **envp, t_allocator **gc)
+t_env *init_env(char **envp)
 {
 	t_env *head = NULL;
 	t_env *current = NULL;
@@ -96,7 +96,7 @@ t_env *init_env(char **envp, t_allocator **gc)
 
 	while (*envp)
 	{
-		new_node = ft_malloc(sizeof(t_env), gc);
+		new_node = ft_malloc(sizeof(t_env));
 		if (!new_node)
 			return NULL;
 		equal_sign = ft_strchr(*envp, '=');
@@ -109,8 +109,8 @@ t_env *init_env(char **envp, t_allocator **gc)
 		new_node->key = ft_substr(*envp, 0, key_len);
 		new_node->value = ft_strdup(equal_sign + 1);
 		new_node->next = NULL;
-		add_to_allocator(new_node->key, gc);
-		add_to_allocator(new_node->value, gc);
+		add_to_allocator(new_node->key);
+		add_to_allocator(new_node->value);
 		if (!head)
 			head = new_node;
 		else
@@ -139,9 +139,9 @@ int main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
-	shell.gc = NULL;
+	gc = NULL;
 	shell.envs = envp;
-	shell.envp = init_env(envp, &shell.gc);
+	shell.envp = init_env(envp);
 	shell.exit_status = 0;
 	shell.tokens = NULL;
 	shell.cmds = NULL;
@@ -167,7 +167,7 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 		printf("Quote check passed\n");
-		token_array = tokenize(line, &shell.gc, &shell);
+		token_array = tokenize(line, &gc, &shell);
 		if (!token_array)
 		{
 			printf("Tokenization failed\n");
@@ -175,7 +175,7 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 		printf("Tokenization completed\n");
-		shell.tokens = build_lexed_tokens(token_array, &shell.gc);
+		shell.tokens = build_lexed_tokens(token_array, &gc);
 		if (!shell.tokens)
 		{
 			printf("Lexer failed\n");

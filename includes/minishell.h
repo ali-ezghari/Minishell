@@ -74,7 +74,6 @@ typedef struct s_shell
 {
 	t_env		*envp;
 	char		**envs;
-	t_allocator	*gc;
 	t_token		*tokens;
 	t_command	*cmds;
 	int			is_forked;
@@ -82,6 +81,8 @@ typedef struct s_shell
 	int			in_fd_b;
 	int			out_fd_b;
 }				t_shell;
+
+extern t_allocator *gc;
 
 //
 // TOKENIZER / LEXER FUNCTIONS
@@ -147,7 +148,7 @@ void	dup_in(int fd);
 void	dup_out(int fd);
 void	restore_fds(int in, int out);
 void	custom_err(char *msg, char *name, int status, t_shell *shell);
-void	add_string_array_to_allocator(char **arr, t_allocator **gc);
+void	add_string_array_to_allocator(char **arr);
 void	sort_env_list(t_env *env);
 t_env	*new_env(char *key, char *value, t_shell *shell);
 void	cleanup_shell(t_shell *shell);
@@ -160,7 +161,7 @@ int		is_valid_var_name(char *name);
 char	*handle_exp(char *inp, t_shell *shell, int exit_status);
 char	*ft_expand_vars(char *str, t_shell *shell);
 char	*ft_expand_exit_status(char *str, int exit_status, t_allocator **gc);
-void	allocation_failure(t_shell *shell);
+void	allocation_failure(void);
 t_env	*env_new(char *name, char *value, t_allocator **gc);
 char	*get_identifier(char *str, t_shell *shell);
 int		check_identifier(char *cmd, t_shell *shell);

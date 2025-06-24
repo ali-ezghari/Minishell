@@ -16,15 +16,27 @@ t_env	*new_env(char *key, char *value, t_shell *shell)
 {
 	t_env	*node;
 
-	node = ft_malloc(sizeof(t_env), &shell->gc);
+	node = ft_malloc(sizeof(t_env));
 	if (!node)
 		return (NULL);
 	node->key = ft_strdup(key);
 	node->value = ft_strdup(value);
-	add_to_allocator(node->key, &shell->gc);
-	add_to_allocator(node->value, &shell->gc);
+	add_to_allocator(node->key);
+	add_to_allocator(node->value);
 	node->next = NULL;
 	return (node);
+}
+
+t_list	*newnode(void *content, t_shell *shell)
+{
+	t_list	*head;
+
+	head = ft_malloc(sizeof(t_list));
+	if (!head)
+		return (NULL);
+	head->content = content;
+	head->next = (NULL);
+	return (head);
 }
 
 char	*ft_strjoin_three(char *s1, char *s2, char *s3)
@@ -40,21 +52,21 @@ char	*ft_strjoin_three(char *s1, char *s2, char *s3)
 	return (joined);
 }
 
-void	add_string_array_to_allocator(char **arr, t_allocator **gc)
+void	add_string_array_to_allocator(char **arr)
 {
 	int	i;
 
 	i = 0;
-	add_to_allocator(arr, gc);
+	add_to_allocator(arr);
 	while (arr[i])
 	{
-		add_to_allocator(arr[i], gc);
+		add_to_allocator(arr[i]);
 		i++;
 	}
 }
 
-void	allocation_failure(t_shell *shell)
+void	allocation_failure(void)
 {
-	free_all(&shell->gc);
+	ft_lstclear(&gc, free);
 	exit(1);
 }
