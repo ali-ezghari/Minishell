@@ -31,22 +31,20 @@ t_token_type get_token_type(const char *s)
     return T_WORD;
 }
 
-// Allocate token and its value using garbage collector allocator
-t_token *new_token(char *val, t_allocator **gc)
+t_token *new_token(char *val)
 {
     t_token *tok;
     char    *copy;
     int     quoted = 0;
 
-    if (!val || !gc)
+    if (!val)
         return NULL;
-    // Check if the value is quoted
     if ((val[0] == '"' || val[0] == '\'') && val[strlen(val)-1] == val[0])
         quoted = 1;
-    tok = ft_malloc(sizeof(t_token), gc);
+    tok = ft_malloc(sizeof(t_token));
     if (!tok)
         return NULL;
-    copy = ft_malloc(ft_strlen(val) + 1, gc);
+    copy = ft_malloc(ft_strlen(val) + 1);
     if (!copy)
         return NULL;
     ft_strlcpy(copy, val, ft_strlen(val) + 1);
@@ -60,19 +58,18 @@ t_token *new_token(char *val, t_allocator **gc)
     return tok;
 }
 
-// Build linked list of tokens with allocations tracked in gc
-t_token *build_lexed_tokens(char **token_array, t_allocator **gc)
+t_token *build_lexed_tokens(char **token_array)
 {
     t_token *head = NULL;
     t_token *tail = NULL;
     t_token *new;
     int     i = 0;
 
-    if (!token_array || !gc)
+    if (!token_array)
         return NULL;
     while (token_array[i])
     {
-        new = new_token(token_array[i], gc);
+        new = new_token(token_array[i]);
         if (!new)
             return NULL;
         if (!head)

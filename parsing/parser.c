@@ -20,14 +20,14 @@ static int is_redirection_type(t_token_type type)
         || type == T_APPEND || type == T_HEREDOC);
 }
 
-static char *gc_strdup(const char *s, t_allocator **gc)
+static char *gc_strdup(const char *s)
 {
     char *copy;
     size_t len = ft_strlen(s);
 
-    if (!s || !gc)
+    if (!s)
         return NULL;
-    copy = ft_malloc(len + 1, gc);
+    copy = ft_malloc(len + 1);
     if (!copy)
         return NULL;
     ft_memcpy(copy, s, len);
@@ -35,17 +35,17 @@ static char *gc_strdup(const char *s, t_allocator **gc)
     return copy;
 }
 
-static t_redir *new_redir(t_token_type type, char *filename, t_allocator **gc)
+static t_redir *new_redir(t_token_type type, char *filename)
 {
     t_redir *redir;
 
-    if (!filename || !gc)
+    if (!filename)
         return NULL;
-    redir = ft_malloc(sizeof(t_redir), gc);
+    redir = ft_malloc(sizeof(t_redir));
     if (!redir)
         return NULL;
     redir->type = type;
-    redir->filename = gc_strdup(filename, gc);
+    redir->filename = gc_strdup(filename);
     if (!redir->filename)
         return NULL;
     redir->next = NULL;
@@ -70,13 +70,13 @@ static void add_redir(t_redir **redir_list, t_redir *new)
     }
 }
 
-static void add_arg(char ***av, char *value, t_allocator **gc)
+static void add_arg(char ***av, char *value)
 {
     int count = 0;
     char **new_av;
     int i;
 
-    if (!av || !value || !gc)
+    if (!av || !value)
         return;
     if (*av)
     {
@@ -84,7 +84,7 @@ static void add_arg(char ***av, char *value, t_allocator **gc)
             count++;
     }
 
-    new_av = ft_malloc(sizeof(char *) * (count + 2), gc);
+    new_av = ft_malloc(sizeof(char *) * (count + 2));
     if (!new_av)
         return;
     i = 0;
@@ -94,20 +94,17 @@ static void add_arg(char ***av, char *value, t_allocator **gc)
         i++;
     }
 
-    new_av[count] = gc_strdup(value, gc);
+    new_av[count] = gc_strdup(value);
     new_av[count + 1] = NULL;
 
     *av = new_av;
 }
 
-
-static t_command *new_command(t_allocator **gc)
+static t_command *new_command(void)
 {
     t_command *cmd;
 
-    if (!gc)
-        return NULL;
-    cmd = ft_malloc(sizeof(t_command), gc);
+    cmd = ft_malloc(sizeof(t_command));
     if (!cmd)
         return NULL;
     cmd->av = NULL;
@@ -132,7 +129,7 @@ t_command *parse_tokens(t_token *tok, t_shell *shell)
     {
         if (!cur)
         {
-            cur = new_command(&shell->gc);
+            cur = new_command();
             if (!cur)
                 return NULL;
             if (!head)
@@ -144,28 +141,27 @@ t_command *parse_tokens(t_token *tok, t_shell *shell)
             char *value = tok->value;
             if (tok->quoted)
             {
-                // Remove surrounding quotes but preserve the content
                 size_t len = strlen(value);
                 if (len >= 2)
                 {
                     char *unquoted = ft_substr(value, 1, len - 2);
-                    add_arg(&cur->av, unquoted, &shell->gc);
+                    add_arg(&cur->av, unquoted);
                 }
                 else
                 {
-                    add_arg(&cur->av, "", &shell->gc);
+                    add_arg(&cur->av, "");
                 }
             }
             else
             {
-                add_arg(&cur->av, value, &shell->gc);
+                add_arg(&cur->av, value);
             }
         }
         else if (is_redirection_type(tok->type) && !tok->quoted)
         {
             if (tok->next)
             {
-                t_redir *r = new_redir(tok->type, tok->next->value, &shell->gc);
+                t_redir *r = new_redir(tok->type, tok->next->value);
                 if (!r)
                     return NULL;
                 add_redir(&cur->redirs, r);
@@ -174,7 +170,7 @@ t_command *parse_tokens(t_token *tok, t_shell *shell)
         }
         else if (tok->type == T_PIPE && !tok->quoted)
         {
-            t_command *next = new_command(&shell->gc);
+            t_command *next = new_command();
             if (!next)
                 return NULL;
             cur->next = next;

@@ -88,15 +88,15 @@ extern t_allocator *gc;
 // TOKENIZER / LEXER FUNCTIONS
 //
 
-char	**tokenize(const char *inp, t_allocator **gc, t_shell *shell);
-char	*ft_strndup(const char *s, size_t n, t_allocator **gc);
+char	**tokenize(const char *inp, t_shell *shell);
+char	*ft_strndup(const char *s, size_t n);
 void	skip_spaces(const char **str);
-char	*get_quoted_token(const char **str, t_allocator **gc);
-char	*get_operator_token(const char **str, t_allocator **gc);
-char	*get_env_var_token(const char **str, t_allocator **gc, t_shell *shell);
-char	*get_word_token(const char **str, t_allocator **gc);
-t_token	*build_lexed_tokens(char **token_array, t_allocator **gc);
-t_token	*new_token(char *val, t_allocator **gc);
+char	*get_quoted_token(const char **str);
+char	*get_operator_token(const char **str);
+char	*get_env_var_token(const char **str, t_shell *shell);
+char	*get_word_token(const char **str);
+t_token	*build_lexed_tokens(char **token_array);
+t_token	*new_token(char *val);
 t_token_type	get_token_type(const char *s);
 
 //
