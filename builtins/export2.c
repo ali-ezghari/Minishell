@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-static t_env	*copy_env_list(t_env *env, t_shell *shell)
+static t_env	*copy_env_list(t_env *env)
 {
 	t_env	*copy;
 	t_env	*new_node;
@@ -32,11 +32,11 @@ static t_env	*copy_env_list(t_env *env, t_shell *shell)
 	return (copy);
 }
 
-void	print_sorted_env(t_env *env, t_shell *shell)
+void	print_sorted_env(t_env *env)
 {
 	t_env	*sorted;
 
-	sorted = copy_env_list(env, shell);
+	sorted = copy_env_list(env);
 	sort_env_list(sorted);
 	while (sorted)
 	{

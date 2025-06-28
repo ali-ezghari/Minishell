@@ -44,7 +44,7 @@ static char	*update_str(char *str, char *exit_code, char *scnd_part)
 	return (result);
 }
 
-char	*ft_expand_exit_status(char *str, int exit_status, t_allocator **gc)
+char	*ft_expand_exit_status(char *str, int exit_status)
 {
 	char	*pos;
 	char	*exit_status_str;
@@ -52,12 +52,12 @@ char	*ft_expand_exit_status(char *str, int exit_status, t_allocator **gc)
 	char	*tmp;
 	char	*next_part;
 
-	if (!str || !gc)
+	if (!str)
 		return (NULL);
 	pos = exit_status_pos(str);
 	if (!pos)
 		return (ft_strdup(str));
-	tmp = ft_strndup(str, pos - str, gc);
+	tmp = ft_strndup(str, pos - str);
 	if (!tmp)
 		return (NULL);
 	exit_status_str = ft_itoa(exit_status);
@@ -69,7 +69,7 @@ char	*ft_expand_exit_status(char *str, int exit_status, t_allocator **gc)
 	result = update_str(tmp, exit_status_str, next_part);
 	if (!result)
 		return (free(tmp), free(exit_status_str), free(next_part), NULL);
-	char *expanded = ft_expand_exit_status(result, exit_status, gc);
+	char *expanded = ft_expand_exit_status(result, exit_status);
 	if (expanded != result)
 		return (expanded);
 	return result;

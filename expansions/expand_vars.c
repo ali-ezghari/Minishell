@@ -29,7 +29,7 @@ static char	*var_pos(char *str)
 	return (NULL);
 }
 
-static char	*get_env_value(char *var_name, t_env *envp, t_allocator **gc)
+static char	*get_env_value(char *var_name, t_env *envp)
 {
 	t_env	*current;
 	int		len;
@@ -51,7 +51,7 @@ static char	*get_env_value(char *var_name, t_env *envp, t_allocator **gc)
 	return (ft_strdup(""));
 }
 
-static char	*update_str(char *str, char *var_value, char *scnd_part, t_allocator **gc)
+static char	*update_str(char *str, char *var_value, char *scnd_part)
 {
 	char	*fst_part;
 	char	*result;
@@ -83,7 +83,7 @@ char	*ft_expand_vars(char *str, t_shell *shell)
 	char	*next_part;
 	int		var_size;
 
-	if (!str || !shell || !shell->envp || !shell->gc)
+	if (!str || !shell || !shell->envp )
 		return (NULL);
 	pos = var_pos(str);
 	if (!pos)
@@ -94,17 +94,17 @@ char	*ft_expand_vars(char *str, t_shell *shell)
 	var_name = ft_substr(pos, 1, var_size);
 	if (!var_name)
 		return (NULL);
-	tmp = ft_strndup(str, pos - str, &shell->gc);
+	tmp = ft_strndup(str, pos - str);
 	if (!tmp)
 		return (free(var_name), NULL);
-	var_value = get_env_value(var_name, shell->envp, &shell->gc);
+	var_value = get_env_value(var_name, shell->envp);
 	free(var_name);
 	if (!var_value)
 		return (free(tmp), NULL);
 	next_part = ft_strdup(pos + var_size + 1);
 	if (!next_part)
 		return (free(tmp), free(var_value), NULL);
-	result = update_str(tmp, var_value, next_part, &shell->gc);
+	result = update_str(tmp, var_value, next_part);
 	if (!result)
 		return (free(tmp), free(var_value), free(next_part), NULL);
 

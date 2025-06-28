@@ -6,7 +6,7 @@
 /*   By: aezghari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 15:22:53 by aezghari          #+#    #+#             */
-/*   Updated: 2025/05/23 09:58:37 by aezghari         ###   ########.fr       */
+/*   Updated: 2025/06/26 09:36:20 by aezghari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static char	*handle_direct_path(char *cmd, t_shell *shell)
 
 	if (stat(cmd, &st) == 0 && S_ISDIR(st.st_mode))
 	{
-		custom_err(": Is a directory\n",cmd, 126, shell);
+		custom_err(": Is a directory\n", cmd, 126, shell);
 		return (NULL);
 	}
 	if (access(cmd, F_OK) != 0)

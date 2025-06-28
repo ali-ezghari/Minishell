@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-t_env	*new_env(char *key, char *value, t_shell *shell)
+t_env	*new_env(char *key, char *value)
 {
 	t_env	*node;
 
@@ -27,14 +27,14 @@ t_env	*new_env(char *key, char *value, t_shell *shell)
 	return (node);
 }
 
-t_list	*newnode(void *content, t_shell *shell)
+t_allocator	*newnode(void *content)
 {
-	t_list	*head;
+	t_allocator	*head;
 
-	head = ft_malloc(sizeof(t_list));
+	head = ft_malloc(sizeof(t_allocator));
 	if (!head)
 		return (NULL);
-	head->content = content;
+	head->ptr = content;
 	head->next = (NULL);
 	return (head);
 }

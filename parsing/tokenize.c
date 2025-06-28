@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-#include "../includes/utils.h"
-#include "../libft/libft.h"
 
 #define IS_OPERATOR(c) ((c) == '|' || (c) == '<' || (c) == '>')
 #define MAX_TOKENS 512

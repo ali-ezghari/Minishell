@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-#include "../includes/utils.h"
-#include "../libft/libft.h"
 
 static int is_redirection_type(t_token_type type)
 {

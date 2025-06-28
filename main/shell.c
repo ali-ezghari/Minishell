@@ -1,5 +1,7 @@
 #include "../includes/minishell.h"
-#include "../includes/utils.h"
+
+
+t_allocator *gc;
 
 void print_redirs(t_redir *redir)
 {
@@ -136,15 +138,17 @@ int main(int argc, char **argv, char **envp)
 	t_shell shell;
 	char *line;
 	char **token_array;
-
 	(void)argc;
 	(void)argv;
-	gc = NULL;
+	
+	gc = ft_lstnew_custom(NULL);
+
 	shell.envs = envp;
 	shell.envp = init_env(envp);
 	shell.exit_status = 0;
 	shell.tokens = NULL;
 	shell.cmds = NULL;
+	sig_setup();
 	printf("Enter commands to test parsing. Type 'exit' to quit.\n\n");
 	while (1)
 	{
@@ -167,7 +171,7 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 		printf("Quote check passed\n");
-		token_array = tokenize(line, &gc, &shell);
+		token_array = tokenize(line, &shell);
 		if (!token_array)
 		{
 			printf("Tokenization failed\n");
@@ -175,7 +179,7 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 		printf("Tokenization completed\n");
-		shell.tokens = build_lexed_tokens(token_array, &gc);
+		shell.tokens = build_lexed_tokens(token_array);
 		if (!shell.tokens)
 		{
 			printf("Lexer failed\n");
@@ -209,5 +213,6 @@ int main(int argc, char **argv, char **envp)
 		cleanup_shell(&shell);
 		free(line);
 	}
+	ft_lstclear(&gc, free);
 	return 0;
 }

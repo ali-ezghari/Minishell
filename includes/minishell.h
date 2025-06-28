@@ -27,8 +27,8 @@
 # include <readline/history.h>
 # include <ctype.h>
 # include <sys/wait.h>
-# include "../libft/libft.h"
 # include "utils.h"
+#include <signal.h>
 #include <sys/stat.h>
 typedef enum e_token_type
 {
@@ -84,6 +84,8 @@ typedef struct s_shell
 
 extern t_allocator *gc;
 
+
+void	sig_setup(void);
 //
 // TOKENIZER / LEXER FUNCTIONS
 //
@@ -132,7 +134,7 @@ int		init_pids_fds(int cmd_count, pid_t **pids, int **fds, t_shell *shell);
 // HEREDOC
 //
 int		handle_heredoc(t_command *cmd, t_shell *shell);
-char	*quote_remover(char *del, int *expand, t_shell *shell);
+char	*quote_remover(char *del, int *expand);
 
 //
 // Helpers
@@ -150,9 +152,9 @@ void	restore_fds(int in, int out);
 void	custom_err(char *msg, char *name, int status, t_shell *shell);
 void	add_string_array_to_allocator(char **arr);
 void	sort_env_list(t_env *env);
-t_env	*new_env(char *key, char *value, t_shell *shell);
+t_env	*new_env(char *key, char *value);
 void	cleanup_shell(t_shell *shell);
-char **env_list_to_array(t_env *env, t_shell *shell);
+char **env_list_to_array(t_env *env);
 //
 // Variable Expansion Functions
 //
@@ -160,12 +162,12 @@ int		is_var_name(char c);
 int		is_valid_var_name(char *name);
 char	*handle_exp(char *inp, t_shell *shell, int exit_status);
 char	*ft_expand_vars(char *str, t_shell *shell);
-char	*ft_expand_exit_status(char *str, int exit_status, t_allocator **gc);
+char	*ft_expand_exit_status(char *str, int exit_status);
 void	allocation_failure(void);
-t_env	*env_new(char *name, char *value, t_allocator **gc);
-char	*get_identifier(char *str, t_shell *shell);
+t_env	*env_new(char *name, char *value);
+char	*get_identifier(char *str);
 int		check_identifier(char *cmd, t_shell *shell);
-void	print_sorted_env(t_env *env, t_shell *shell);
+void	print_sorted_env(t_env *env);
 int		print_synerror(const char *content);
 int		check_unclosed_quotes(const char *line);
 #endif

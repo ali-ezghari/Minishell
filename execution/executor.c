@@ -6,7 +6,7 @@
 /*   By: aezghari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 15:27:50 by aezghari          #+#    #+#             */
-/*   Updated: 2025/05/22 15:30:03 by aezghari         ###   ########.fr       */
+/*   Updated: 2025/06/26 09:35:54 by aezghari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,11 @@ void	get_exit_code(int *status, t_shell *shell)
 	if (WIFEXITED(*status))
 		shell->exit_status = WEXITSTATUS(*status);
 	else if (WIFSIGNALED(*status))
+	{
 		shell->exit_status = 128 + WTERMSIG(*status);
+		if (WTERMSIG(*status) == SIGINT || WTERMSIG(*status) == SIGQUIT)
+			write(1, "\n", 1);
+	}
 }
 
 int	execute_builtin(t_command *cmd, t_shell *shell)
@@ -49,9 +53,11 @@ void	execution(t_shell *shell)
 	cmd = shell->cmds;
 	shell->is_forked = 0;
 	count = 0;
-	in_out_backup(shell); // ! put it inside the int main 
-	handle_heredoc(cmd, shell);
-	while (cmd)	{
+	in_out_backup(shell);
+	if (handle_heredoc(cmd, shell))
+		return ;
+	while (cmd)
+	{
 		count++;
 		cmd = cmd->next;
 	}

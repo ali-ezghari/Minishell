@@ -6,7 +6,7 @@
 /*   By: aezghari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:17:45 by aezghari          #+#    #+#             */
-/*   Updated: 2025/05/22 11:19:29 by aezghari         ###   ########.fr       */
+/*   Updated: 2025/06/26 09:42:50 by aezghari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	bin_exit(t_command *cmd, t_shell *shell)
 	else
 		st = check_errors(cmd, shell);
 	if (shell->is_forked == 0)
-		write(1, "exit\n", 5); 
+		write(1, "exit\n", 5);
 	close_files(cmd->redirs);
 	restore_fds(shell->in_fd_b, shell->out_fd_b);
 	ft_lstclear(&gc, free);

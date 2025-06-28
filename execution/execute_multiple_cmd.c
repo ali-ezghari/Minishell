@@ -21,6 +21,7 @@ static void	wait_for_children(pid_t *pids, int cmd_count, t_shell *shell)
 	status = 0;
 	while (i < cmd_count)
 		waitpid(pids[i++], &status, 0);
+	sig_setup();
 	get_exit_code(&status, shell);
 }
 

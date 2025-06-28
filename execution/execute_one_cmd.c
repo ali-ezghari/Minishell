@@ -16,6 +16,7 @@ static void	child_pr(t_command *cmd, t_shell *shell)
 {
 	char	*full_cmd;
 
+	signal(SIGQUIT, SIG_DFL);
 	if (!cmd->av || !cmd->av[0])
 		exit(0);
 	full_cmd = get_path1(cmd->av[0], shell);
@@ -23,6 +24,9 @@ static void	child_pr(t_command *cmd, t_shell *shell)
 		exit(shell->exit_status);
 	execve(full_cmd, cmd->av, env_list_to_array(shell->envp, shell));
 	perror("execve");
+	close_files(cmd->redirs);
+	restore_fds(shell->in_fd_b, shell->out_fd_b);
+	ft_lstclear(&gc, free);
 	exit(127);
 }
 
@@ -43,6 +47,8 @@ void	execute_one_cmd(t_command *cmd, t_shell *shell)
 		return (perror("fork error"));
 	if (child == 0)
 		child_pr(cmd, shell);
+	signal(SIGINT, SIG_IGN);
 	waitpid(child, &status, 0);
+	sig_setup();
 	get_exit_code(&status, shell);
 }

@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-static char	*allocate_del(char *del, int len, t_shell *shell)
+static char	*allocate_del(char *del, int len)
 {
 	char	*str;
 	int		i;
@@ -56,7 +56,7 @@ static int	get_del_len(char *del)
 	return (len);
 }
 
-char	*quote_remover(char *del, int *expand, t_shell *shell)
+char	*quote_remover(char *del, int *expand)
 {
 	int	i;
 	int	len;
@@ -71,5 +71,5 @@ char	*quote_remover(char *del, int *expand, t_shell *shell)
 		i++;
 	}
 	len = get_del_len(del);
-	return (allocate_del(del, len, shell));
+	return (allocate_del(del, len));
 }

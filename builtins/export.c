@@ -29,7 +29,7 @@ void	add_env_back(t_env **env_list, t_env *new_env)
 	tmp->next = new_env;
 }
 
-static void	update_env(t_env **envp, t_env *env, t_shell *shell)
+static void	update_env(t_env **envp, t_env *env)
 {
 	t_env	*head;
 
@@ -59,20 +59,20 @@ void	bin_export(t_command *cmd, t_shell *shell)
 
 	i = 0;
 	if (!cmd->av[1])
-		return (print_sorted_env(shell->envp, shell));
+		return (shell->exit_status = 0, print_sorted_env(shell->envp));
 	while (cmd->av[++i])
 	{
 		if (check_identifier(cmd->av[i], shell))
 			return ;
-		key = get_identifier(cmd->av[i], shell);
+		key = get_identifier(cmd->av[i]);
 		value = NULL;
 		if (ft_strchr(cmd->av[i], '='))
 			value = ft_strdup(ft_strchr(cmd->av[i], '=') + 1);
-		update_env(&shell->envp, new_env(key, value, shell), shell);
+		update_env(&shell->envp, new_env(key, value));
 		if (key)
-			free(key);
+			add_to_allocator(key);
 		if (value)
-			free(value);
+			add_to_allocator(value);
 	}
 	shell->exit_status = 0;
 }

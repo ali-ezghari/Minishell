@@ -6,22 +6,17 @@
 /*   By: aezghari <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 15:32:14 by aezghari          #+#    #+#             */
-/*   Updated: 2025/05/22 15:35:52 by aezghari         ###   ########.fr       */
+/*   Updated: 2025/06/26 09:40:50 by aezghari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int	fill_heredoc(t_shell *shell, t_redir *redir)
+static void	heredoc_child(char *del, int fd, int expand, t_shell *shell)
 {
-	int		fd[2];
 	char	*rl;
-	char	*del;
-	int		expand;
 
-	del = quote_remover(redir->filename, &expand, shell);
-	if (pipe(fd) == -1)
-		return (pipe_err(shell), 1);
+	signal(SIGINT, SIG_DFL);
 	while (1)
 	{
 		rl = readline("> ");
@@ -31,11 +26,38 @@ static int	fill_heredoc(t_shell *shell, t_redir *redir)
 			break ;
 		if (expand == 1 && ft_strchr(rl, '$'))
 			rl = handle_exp(rl, shell, shell->exit_status);
-		write(fd[1], rl, ft_strlen(rl));
-		write(fd[1], "\n", 1);
+		write(fd, rl, ft_strlen(rl));
+		write(fd, "\n", 1);
 	}
+	close(fd);
+}
+
+static int	fill_heredoc(t_shell *shell, t_redir *redir)
+{
+	int		fd[2];
+	char	*del;
+	int		expand;
+	pid_t	child;
+	int		status;
+
+	del = quote_remover(redir->filename, &expand, shell);
+	if (pipe(fd) == -1)
+		return (pipe_err(shell), 1);
+	signal(SIGINT, SIG_IGN);
+	child = fork();
+	if (child == 0)
+	{
+		close(fd[0]);
+		heredoc_child(del, fd[1], expand, shell);
+		exit(0);
+	}
+	waitpid(child, &status, 0);
 	close(fd[1]);
+	sig_setup();
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		return (shell->exit_status = 130, close(fd[0]), write(1, "\n", 1), 1);
 	redir->fd = fd[0];
+	get_exit_code(&status, shell);
 	return (0);
 }
 

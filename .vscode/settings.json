@@ -8,6 +8,9 @@
         "algorithm": "c",
         "format": "c",
         "errno.h": "c",
-        "charconv": "c"
+        "charconv": "c",
+        "signal.h": "c",
+        "iomanip": "c",
+        "utils.h": "c"
     }
 }

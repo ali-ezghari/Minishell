@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 
 NAME = minishell
 
@@ -13,6 +13,7 @@ SRCS = \
     helper_funcs/helpers1.c \
     helper_funcs/helpers2.c \
     helper_funcs/helpers3.c \
+    helper_funcs/helpers4.c \
     helper_funcs/allocator.c \
     builtins/echo.c \
     builtins/exit.c \
@@ -33,32 +34,31 @@ SRCS = \
     expansions/handle_exp.c \
     expansions/expand_vars.c \
     expansions/expand_exit_status.c \
-    execution/environment.c
+    execution/environment.c \
+    libft/lib1.c \
+    libft/lib2.c \
+    libft/lib3.c \
+    libft/lib4.c \
+    libft/lib5.c \
+    libft/lib6.c 
 OBJS = $(SRCS:.c=.o)
 
 INCLUDES = minishell.h
 
-LIBFT_DIR = libft
-LIBFT_LIB = $(LIBFT_DIR)/libft.a
-LIBFT_INC = -I$(LIBFT_DIR)
 
 LIBS = -lreadline
 
-all: $(LIBFT_LIB) $(NAME)
+all:$(NAME)
 
-$(LIBFT_LIB): 
-	$(MAKE) -C $(LIBFT_DIR)
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LIBFT_LIB) $(LIBS) $(LIBFT_INC)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LIBS)
 
 clean:
 	rm -f $(OBJS)
-	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
 	rm -f $(NAME)
-	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
