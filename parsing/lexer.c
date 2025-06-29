@@ -37,8 +37,15 @@ t_token *new_token(char *val)
 
     if (!val)
         return NULL;
-    if ((val[0] == '"' || val[0] == '\'') && val[strlen(val)-1] == val[0])
+    // Special case for $? which should never be quoted
+    if (strcmp(val, "$?") == 0)
+    {
+        quoted = 0;
+    }
+    else if ((val[0] == '"' || val[0] == '\'') && val[strlen(val)-1] == val[0])
+    {
         quoted = 1;
+    }
     tok = ft_malloc(sizeof(t_token));
     if (!tok)
         return NULL;
@@ -47,10 +54,7 @@ t_token *new_token(char *val)
         return NULL;
     ft_strlcpy(copy, val, ft_strlen(val) + 1);
     tok->value = copy;
-    if (quoted)
-        tok->type = get_token_type(copy + 1);
-    else
-        tok->type = get_token_type(copy);
+    tok->type = get_token_type(copy);
     tok->next = NULL;
     tok->quoted = quoted;
     return tok;

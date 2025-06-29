@@ -11,19 +11,13 @@ static char	*var_pos(char *str)
 			str++;
 			while (*str && *str != '\'')
 				str++;
+			if (!*str) break;
 		}
-		if (*str == '\"')
+		if (*str == '$')
 		{
-			str++;
-			while (*str && *str != '\"')
-			{
-				if (*str == '$' && is_var_name(str[1]))
-					return (str);
-				str++;
-			}
+			if (is_var_name(str[1]) || str[1] == '?')
+				return (str);
 		}
-		if (*str == '$' && is_var_name(str[1]))
-			return (str);
 		str++;
 	}
 	return (NULL);

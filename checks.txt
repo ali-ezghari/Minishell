@@ -2,10 +2,10 @@ cmds:
 
 PASRSING:
 
-=> echo ''$?''"42" : should prints only code followed 42 =>(042). but it prints (0  42). 
-=> echo hi | "|" : causes syntax error but "|" should be treated as a string, so that it can be handled in the exection
-=> echo "exit_code ->$? user ->$USER home -> $HOME" : Doesn't expand nothing
-=> $/ : when you parse this command you remove the $. And i only receive /. the $ should remain. and i should receive the command like it was ($/)
+=> echo ''$?''"42" : should prints only code followed 42 =>(042). but it prints (0  42). || FIXED
+=> echo hi | "|" : causes syntax error but "|" should be treated as a string, so that it can be handled in the exection || FIXED
+=> echo "exit_code ->$? user ->$USER home -> $HOME" : Doesn't expand nothing || FIXED
+=> $/ : when you parse this command you remove the $. And i only receive /. the $ should remain. and i should receive the command like it was ($/) || FIXED
 
 
 => exit : double free

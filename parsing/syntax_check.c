@@ -12,7 +12,7 @@ static int	check_pipe(t_token *tok, t_shell *shell)
 		return (1);
 	if (tok->type != T_PIPE)
 		return (1);
-	if (!tok->next || tok->next->type == T_PIPE)
+	if (!tok->next || (tok->next->type == T_PIPE && !tok->next->quoted))
 	{
 		print_synerror("|");
 		shell->exit_status = 2;

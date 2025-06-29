@@ -60,8 +60,7 @@ char	*get_quoted_token(const char **str)
 	len = *str - start;
 	if (**str == quote)
 		(*str)++;
-	// Create token including the quotes
-	token = ft_malloc(len + 3); // +3 for two quotes and null terminator
+	token = ft_malloc(len + 3);
 	if (!token)
 		return NULL;
 	token[0] = quote;
@@ -104,7 +103,6 @@ char	*get_env_var_token(const char **str, t_shell *shell)
 	if (!str || !*str || !**str)
 		return (NULL);
 	(*str)++;
-	//$? case (exit status)
 	if (**str == '?')
 	{
 		(*str)++;
@@ -141,8 +139,7 @@ char	*get_env_var_token(const char **str, t_shell *shell)
 			return NULL;
 		}
 	}
-	// Handle lone $ case
-	if (!**str || **str == ' ' || **str == '\'' || **str == '"' || **str == '$')
+	if (!**str || !is_var_name(**str))
 	{
 		char *gc_result = ft_malloc(2);
 		if (gc_result)
@@ -154,7 +151,7 @@ char	*get_env_var_token(const char **str, t_shell *shell)
 		return NULL;
 	}
 	start = *str;
-	while (**str && (ft_isalnum(**str) || **str == '_'))
+	while (**str && is_var_name(**str))
 		(*str)++;
 	len = *str - start;
 	var_name = ft_strndup(start, len);

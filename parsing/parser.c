@@ -137,23 +137,20 @@ t_command *parse_tokens(t_token *tok, t_shell *shell)
         if (tok->type == T_WORD || tok->quoted)
         {
             char *value = tok->value;
-            if (tok->quoted)
+            if (tok->quoted && ft_strchr(value, '$'))
             {
-                size_t len = strlen(value);
-                if (len >= 2)
-                {
-                    char *unquoted = ft_substr(value, 1, len - 2);
-                    add_arg(&cur->av, unquoted);
-                }
-                else
-                {
-                    add_arg(&cur->av, "");
-                }
+                char *expanded = handle_exp(value, shell, shell->exit_status);
+                if (!expanded)
+                    return NULL;
+                add_arg(&cur->av, expanded);
+                free(expanded);
             }
             else
             {
                 add_arg(&cur->av, value);
             }
+            tok = tok->next;
+            continue;
         }
         else if (is_redirection_type(tok->type) && !tok->quoted)
         {
