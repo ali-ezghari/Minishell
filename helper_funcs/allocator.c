@@ -18,10 +18,11 @@ void	add_to_allocator(void *ptr)
 
 	if (!ptr)
 		return ;
-	new = malloc(sizeof(t_allocator));
+	new = (t_allocator *)ft_malloc(sizeof(t_allocator));
 	if (!new)
-		return ;
+		return (allocation_failure());
 	new->ptr = ptr;
+	new->next = NULL;
 	ft_lstadd_back(&gc, new);
 }
 
@@ -37,6 +38,7 @@ void	*ft_malloc(size_t size)
 	if (!new)
 		return (allocation_failure(), NULL);
 	new->ptr = ptr;
+	new->next = NULL;
 	ft_lstadd_back(&gc, new);
 	return (ptr);
 }

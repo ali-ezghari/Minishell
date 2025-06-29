@@ -164,7 +164,7 @@ char	*handle_exp(char *inp, t_shell *shell, int exit_status);
 char	*ft_expand_vars(char *str, t_shell *shell);
 char	*ft_expand_exit_status(char *str, int exit_status);
 void	allocation_failure(void);
-t_env	*env_new(char *name, char *value);
+t_env	*new_env(char *key, char *value);
 char	*get_identifier(char *str);
 int		check_identifier(char *cmd, t_shell *shell);
 void	print_sorted_env(t_env *env);

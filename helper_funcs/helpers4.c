@@ -31,9 +31,9 @@ t_allocator	*ft_lstnew_custom(void	*ptr)
 {
 	t_allocator	*new_node;
 
-	new_node = (t_allocator *)malloc(sizeof(t_allocator));
+	new_node = (t_allocator *)ft_malloc(sizeof(t_allocator));
 	if (!new_node)
-		return (NULL);
+		return (allocation_failure(), NULL);
 	new_node->ptr = ptr;
 	new_node->next = NULL;
 	return (new_node);
