@@ -40,7 +40,7 @@ static int	fill_heredoc(t_shell *shell, t_redir *redir)
 	pid_t	child;
 	int		status;
 
-	del = quote_remover(redir->filename, &expand, shell);
+	del = quote_remover(redir->filename, &expand);
 	if (pipe(fd) == -1)
 		return (pipe_err(shell), 1);
 	signal(SIGINT, SIG_IGN);

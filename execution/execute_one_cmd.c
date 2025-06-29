@@ -22,7 +22,7 @@ static void	child_pr(t_command *cmd, t_shell *shell)
 	full_cmd = get_path1(cmd->av[0], shell);
 	if (!full_cmd)
 		exit(shell->exit_status);
-	execve(full_cmd, cmd->av, env_list_to_array(shell->envp, shell));
+	execve(full_cmd, cmd->av, env_list_to_array(shell->envp));
 	perror("execve");
 	close_files(cmd->redirs);
 	restore_fds(shell->in_fd_b, shell->out_fd_b);

@@ -38,7 +38,7 @@ static void	exec_child(t_command *cmd, t_shell *shell)
 	full_cmd = get_path1(cmd->av[0], shell);
 	if (!full_cmd)
 		allocation_failure();
-	execve(full_cmd, cmd->av, env_list_to_array(shell->envp, shell));
+	execve(full_cmd, cmd->av, env_list_to_array(shell->envp));
 	perror("execve");
 	exit(1);
 }
